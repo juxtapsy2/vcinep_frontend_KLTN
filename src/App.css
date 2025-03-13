@@ -1,0 +1,5 @@
+body {
+  background: #ffff;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
