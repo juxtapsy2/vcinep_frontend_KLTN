@@ -2,7 +2,7 @@ import React from "react";
 import Header from "./Common/Header/Header.js";
 import Footer from "./Common/Footer/Footer.js";
 import ChatBot from "./chatbot/ChatBot.js";
-import ChatBox from "./Common/Chat/Messenger.js";
+import Messenger from "./Common/Chat/Messenger.js";
 
 function Layout({ children }) {
   return (
@@ -10,7 +10,7 @@ function Layout({ children }) {
       <Header />
       <main className="flex-grow" style={{ paddingTop: "4.6rem" }}>
         <ChatBot />
-        <ChatBox />
+        <Messenger />
         {children}
       </main>
       <Footer />

@@ -9,7 +9,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { RiCloseLargeFill } from "react-icons/ri";
 import { IoMdSettings } from "react-icons/io";
 import { IoIosPricetag } from "react-icons/io";
-import { menuItems } from "../../constants/menuItem.js";
+import { menuItems } from "../../constants/constants.js";
 import React, { useState } from "react";
 import "./Header.css";
 import { renderMenuItem, renderMobileMenuItem } from "./HeaderNavItem.js";

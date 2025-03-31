@@ -36,3 +36,11 @@ export const bookingProgress = [
   { progress: 4, flow: "Thanh toán" },
   { progress: 5, flow: "Xác nhận" },
 ];
+
+export const userRoles = {
+  ADMIN: "Admin",
+  MANAGER: "Manager",
+  EMPLOYEE: "Employee",
+  USER: "User",
+  GUEST: ""
+};
