@@ -103,7 +103,7 @@ export const publicRoutes = [
   {
     path: "/account/*",
     component: Account,
-    roles: ["User", "Admin", "Manager"], // Guest route
+    roles: ["User", "Admin", "Manager", "Employee"], // Guest route
     protected: true, // Cần đăng nhập
   },
   {
