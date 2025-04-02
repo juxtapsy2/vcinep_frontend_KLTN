@@ -28,7 +28,9 @@ export const RouteGuard = ({ children, allowedRoles }) => {
       case "Manager":
         return ["Manager", "Admin"].includes(user.role);
       case "User":
-        return ["User", "Manager", "Admin"].includes(user.role);
+        return ["User", "Manager", "Admin", "Employee"].includes(user.role);
+      case "Employee":
+        return ["User", "Manager", "Admin", "Employee"].includes(user.role);
       default:
         return false;
     }

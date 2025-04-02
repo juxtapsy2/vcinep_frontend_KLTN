@@ -27,18 +27,7 @@ function Ticket() {
   }, [id]);
 
   const generateQRData = (ticket) => {
-    return JSON.stringify({
-      idUser: user?._id,
-      ticketCode: ticket.codeTicket,
-      movie: ticket.movieTitle,
-      cinema: ticket.nameCinema,
-      theater: ticket.nameTheater,
-      date: ticket.showDate,
-      time: ticket.showTime,
-      seat: ticket.seatTicket,
-      customer: ticket.username,
-      phone: ticket.phoneNumber,
-    });
+    return ticket.codeTicket;
   };
 
   const downloadTicket = async () => {
@@ -119,7 +108,12 @@ function Ticket() {
           </h2>
 
           <div className="flex justify-center mb-6">
-            <QRCodeSVG value={generateQRData(ticket)} size={150} level="H" />
+            <QRCodeSVG
+              value={generateQRData(ticket)}
+              size={300} // Tăng kích thước
+              level="L" // Giảm độ phức tạp
+              includeMargin={true} // Thêm margin để dễ quét hơn
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

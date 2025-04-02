@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
 
   const isEmployee = () => {
     return user?.role === "Employee";
-  }
+  };
 
   const isActive = () => {
     return user?.status === "active";

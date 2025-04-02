@@ -90,21 +90,21 @@ export const publicRoutes = [
   },
   {
     path: "/payment",
-    roles: ["User", "Admin", "Manager"], // Guest route
+    roles: ["User", "Admin", "Manager", "Employee"], // Guest route
     component: Payment,
     protected: true, // Cần đăng nhập
   },
   {
     path: "/booking/:id",
     component: Booking,
-    roles: ["User", "Admin", "Manager"], // Guest route
+    roles: ["User", "Admin", "Manager", "Employee"], // Guest route
     protected: true, // Cần đăng nhập
   },
   {
     path: "/account/*",
     component: Account,
     roles: ["User", "Admin", "Manager", "Employee"], // Guest route
-    protected: true, // Cần đăng nhập
+    protected: false, // Cần đăng nhập
   },
   {
     path: "/manage-movies/*",
@@ -128,14 +128,13 @@ export const publicRoutes = [
   {
     path: "/thankyou",
     component: ThankYou,
-    roles: ["User", "Admin", "Manager"], // Guest route
-
+    roles: ["User", "Admin", "Manager", "Employee"], // Guest route
     protected: true, // Cần đăng nhập
   },
   {
     path: "/account/transaction/ticket/:id",
     component: Ticket,
-    roles: ["User", "Admin", "Manager"], // Guest route
+    roles: ["User", "Admin", "Manager", "Employee"], // Guest route
 
     protected: true,
   },
