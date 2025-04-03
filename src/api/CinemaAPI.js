@@ -1,4 +1,5 @@
 import api from "../config/api.js";
+
 export const getShowtimesByCinemaId = async (cinemaId) => {
   try {
     // const token = localStorage.getItem("accessToken");

@@ -20,9 +20,11 @@ import logo from "../image/LogoVCineP.png";
 import { useAuth } from "../../contexts/AuthContext.js";
 import toast, { Toaster } from "react-hot-toast";
 import Breadcrumb from "../Admin/Breadcumb.js";
-
+import { getCinemaById } from "../../api/CinemaAPI.js";
+import { se } from "date-fns/locale";
 function ManagerLayout({ children }) {
   const { user, logout } = useAuth();
+  const [cinema, setCinema] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const location = useLocation();
   // State to store the current time
@@ -42,12 +44,18 @@ function ManagerLayout({ children }) {
   };
   // Update the current time every second
   useEffect(() => {
+    async function fetchCinema() {
+      const cinema = await getCinemaById(user?.idCinema);
+      setCinema(cinema.data);
+      console.log("cinema", cinema);
+    }
+    fetchCinema();
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [user?.idCinema]);
 
   const menuItems = [
     {
@@ -166,7 +174,7 @@ function ManagerLayout({ children }) {
                 <FontAwesomeIcon icon={faBars} className="w-6 h-6" />
               </button>
               <span className="ml-4 text-lg font-semibold text-gray-800">
-                Xin chào Manager, {user?.username}
+                Xin chào Manager, {user?.username} - {cinema?.name}
               </span>
             </div>
             <div className="flex items-center">
