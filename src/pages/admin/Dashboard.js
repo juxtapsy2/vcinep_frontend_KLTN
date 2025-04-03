@@ -3,6 +3,7 @@ import {
   getStatisticalTickets,
   getStatisticalUser,
   getStatisticalMovie,
+  getTicketsBetweenDates,
 } from "../../api/StatisticalAPI";
 import {
   BarChart,
@@ -74,27 +75,53 @@ function Dashboard() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedStartDate, setSelectedStartDate] = useState("");
+  const [selectedEndDate, setSelectedEndDate] = useState("");
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
+  
+  const handleClear = () => {
+    setSelectedStartDate("");
+    setSelectedEndDate("");
+  };
 
   useEffect(() => {
-    const fetchAllData = async () => {
+    const fetchData = async () => {
       try {
-        const [ticketResponse, userResponse, movieResponse] = await Promise.all(
-          [getStatisticalTickets(), getStatisticalUser(), getStatisticalMovie()]
-        );
+        let fetchedTickets = [];
 
-        setTickets(ticketResponse?.data || []);
+        const [userResponse, movieResponse] = await Promise.all([
+          getStatisticalUser(),
+          getStatisticalMovie(),
+        ]);
+  
         setUsers(userResponse?.data || []);
         setMovies(movieResponse?.data || []);
+  
+        // fetch tickets trong khoảng filter
+        if (selectedStartDate && selectedEndDate) {
+          const revenueResponse = await getTicketsBetweenDates(
+            selectedStartDate,
+            selectedEndDate
+          );
+          fetchedTickets = revenueResponse?.data || [];
+        } else {
+          // fetch all tickets nếu ko có filter
+          const ticketResponse = await getStatisticalTickets();
+          fetchedTickets = ticketResponse?.data || [];
+        }
+        setTickets(fetchedTickets);
+
         setLoading(false);
       } catch (err) {
         setError(err.message);
         setLoading(false);
       }
     };
-    fetchAllData();
-  }, []);
+  
+    fetchData();
+  }, [selectedStartDate, selectedEndDate]);
+  
 
   // Tính toán thống kê với kiểm tra null
   const statistics = {
@@ -107,33 +134,51 @@ function Dashboard() {
     uniqueUsers: users?.length || 0,
   };
 
-  // Xử lý dữ liệu cho biểu đồ với kiểm tra null
-  const dailyData =
-    tickets?.reduce((acc, ticket) => {
-      if (!ticket) return acc;
-      const date = new Date(ticket.createdAt).toLocaleDateString();
-      acc[date] = {
-        revenue: (acc[date]?.revenue || 0) + (ticket.totalPrice || 0),
-        registrations: acc[date]?.registrations || 0,
-      };
-      return acc;
-    }, {}) || {};
+  // Xử lý dữ liệu cho biểu đồ thống kê doanh thu + lượt đăng ký
+  const dailyData = tickets?.reduce((acc, ticket) => {
+    if (!ticket) return acc;
+    const ticketDate = new Date(ticket.createdAt).toLocaleDateString();
 
+    // Check if the ticket's date is within the selected date range
+    if (
+      (!selectedStartDate || ticketDate >= selectedStartDate) &&
+      (!selectedEndDate || ticketDate <= selectedEndDate)
+    ) {
+      // Add ticket revenue to the daily data
+      acc[ticketDate] = {
+        revenue: (acc[ticketDate]?.revenue || 0) + (ticket.totalPrice || 0),
+        registrations: acc[ticketDate]?.registrations || 0,
+      };
+    }
+
+    return acc;
+  }, {}) || {};
+
+  // Add user registrations to the daily data within the selected date range
   users?.forEach((user) => {
     if (!user?.registrationDate) return;
-    const date = new Date(user.registrationDate).toLocaleDateString();
-    if (dailyData[date]) {
-      dailyData[date].registrations++;
-    } else {
-      dailyData[date] = { revenue: 0, registrations: 1 };
+    const userDate = new Date(user.registrationDate).toLocaleDateString();
+
+    // Check if the user's registration date is within the selected date range
+    if (
+      (!selectedStartDate || userDate >= selectedStartDate) &&
+      (!selectedEndDate || userDate <= selectedEndDate)
+    ) {
+      if (dailyData[userDate]) {
+        dailyData[userDate].registrations++;
+      } else {
+        dailyData[userDate] = { revenue: 0, registrations: 1 };
+      }
     }
   });
 
+  // Map the dailyData to the format needed for the chart
   const chartData = Object.entries(dailyData).map(([date, data]) => ({
     date,
     revenue: data.revenue || 0,
     registrations: data.registrations || 0,
   }));
+
 
   // Xử lý dữ liệu biểu đồ tròn với kiểm tra null
   const genreData =
@@ -186,7 +231,28 @@ function Dashboard() {
           color="border-yellow-500"
         />
       </div>
-
+      {/* Filter */}
+      <div className={`flex gap-4 mb-4`}>
+        <input
+          type="date"
+          value={selectedStartDate || ""}
+          onChange={(e) => setSelectedStartDate(e.target.value)}
+          className="border p-2 rounded"
+        />
+        <input
+          type="date"
+          value={selectedEndDate || ""}
+          onChange={(e) => setSelectedEndDate(e.target.value)}
+          className="border p-2 rounded"
+        />
+        <button
+          onClick={handleClear}
+          className="px-4 py-2 bg-red-500 text-white rounded"
+        >
+          Xóa bộ lọc
+        </button>
+      </div>
+      {/* Biểu đồ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
         <ChartContainer title="Biểu đồ doanh thu" isEmpty={!chartData.length}>
           <BarChart data={chartData}>
