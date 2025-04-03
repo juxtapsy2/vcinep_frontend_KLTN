@@ -4,12 +4,18 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import { AuthProvider } from "./contexts/AuthContext";
 import { BookingProvider } from "./contexts/BookingContext";
-import { publicRoutes, adminRoutes, managerRoutes } from "./routes/routes";
+import {
+  publicRoutes,
+  adminRoutes,
+  managerRoutes,
+  employeeRoutes,
+} from "./routes/routes";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import SeatStatusWrapper from "./SeatStatusWrapper.js";
 import { RouteGuard } from "./utils/RouteGuard";
 import AdminLayout from "./components/Admin/AdminLayout.js";
 import ManagerLayout from "./components/Manager/ManagerLayout.js";
+import EmployeeLayout from "./components/Employee/EmployeeLayout.js";
 import RedirectIfAuthenticated from "./utils/RedirectIfAuthenticated.js";
 function App() {
   return (
@@ -43,6 +49,20 @@ function App() {
                         <ManagerLayout>
                           <route.component />
                         </ManagerLayout>
+                      </RouteGuard>
+                    }
+                  />
+                ))}
+                {/* Admin Routes */}
+                {employeeRoutes.map((route) => (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    element={
+                      <RouteGuard allowedRoles={route.roles}>
+                        <EmployeeLayout>
+                          <route.component />
+                        </EmployeeLayout>
                       </RouteGuard>
                     }
                   />

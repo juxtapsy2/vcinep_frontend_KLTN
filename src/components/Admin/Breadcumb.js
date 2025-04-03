@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faHome } from "@fortawesome/free-solid-svg-icons";
+import { managerRoutes } from "../../routes/routes";
 
 const Breadcrumb = ({ customPaths }) => {
   const location = useLocation();
@@ -15,7 +16,7 @@ const Breadcrumb = ({ customPaths }) => {
 
     // Create mapping for custom path names
     const pathMap = {
-      admin: "Trang quản trị",
+      admin: "Quản trị viên",
       dashboard: "Dashboard",
       blog: "Blog",
       users: "Người dùng",
@@ -25,6 +26,10 @@ const Breadcrumb = ({ customPaths }) => {
       showtimes: "Suất chiếu",
       cinemas: "Rạp",
       settings: "Cài đặt",
+      employee: "Nhân viên",
+      manage: "Quản lý",
+      ticketcounter: "Đặt vé tại quầy",
+      checkin: "Checkin",
       ...customPaths, // Allow custom path mappings to be passed as props
     };
 

@@ -39,6 +39,11 @@ import CinemaDetail from "../pages/CinemaDetail";
 import ManagerAddBlog from "../pages/manager/ManagerAddBlog";
 import EditMovie from "../pages/admin/EditMovie";
 import ManagerTickets from "../pages/manager/ManagerTicket";
+import TestEmployee from "../pages/employee/Test";
+import DashboardEmployee from "../pages/employee/DashboardEmployee";
+import TicketCounterEmployee from "../pages/employee/TicketCounterEmployee";
+import CheckinEmployee from "../pages/employee/CheckinEmployee";
+import ManageEmployee from "../pages/manager/ManageEmployee";
 
 export const publicRoutes = [
   {
@@ -338,6 +343,44 @@ export const managerRoutes = [
     path: "manage/ticket/",
     component: ManagerTickets,
     roles: ["Manager"], // Guest route
+    protected: true,
+  },
+  {
+    path: "manage/employee/",
+    component: ManageEmployee,
+    roles: ["Manager"], // Guest route
+    protected: true,
+  },
+];
+export const employeeRoutes = [
+  {
+    path: "/employee",
+    component: DashboardEmployee,
+    roles: ["Employee"],
+    protected: true,
+  },
+  {
+    path: "/employee/dashboard",
+    component: DashboardEmployee,
+    roles: ["Employee"],
+    protected: true,
+  },
+  {
+    path: "/employee/ticketcounter",
+    component: TicketCounterEmployee,
+    roles: ["Employee"],
+    protected: true,
+  },
+  {
+    path: "/employee/checkin",
+    component: CheckinEmployee,
+    roles: ["Employee"],
+    protected: true,
+  },
+  {
+    path: "/employee",
+    component: TestEmployee,
+    roles: ["Employee"],
     protected: true,
   },
 ];
