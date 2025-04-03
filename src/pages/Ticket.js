@@ -5,8 +5,11 @@ import { format } from "date-fns";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { QRCodeSVG } from "qrcode.react";
+import { useAuth } from "../contexts/AuthContext.js";
+
 function Ticket() {
   const { id } = useParams();
+  const { user, logout } = useAuth();
   const [ticket, setTicket] = useState(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -24,17 +27,7 @@ function Ticket() {
   }, [id]);
 
   const generateQRData = (ticket) => {
-    return JSON.stringify({
-      ticketCode: ticket.codeTicket,
-      movie: ticket.movieTitle,
-      cinema: ticket.nameCinema,
-      theater: ticket.nameTheater,
-      date: ticket.showDate,
-      time: ticket.showTime,
-      seat: ticket.seatTicket,
-      customer: ticket.username,
-      phone: ticket.phoneNumber,
-    });
+    return ticket.codeTicket;
   };
 
   const downloadTicket = async () => {
@@ -109,11 +102,19 @@ function Ticket() {
           </div>
         </div>
 
-        {/* Movie Info Section */}
         <div className="p-6 pt-8">
           <h2 className="text-xl md:text-2xl font-bold text-red-800 text-center mb-6">
             {ticket.movieTitle}
           </h2>
+
+          <div className="flex justify-center mb-6">
+            <QRCodeSVG
+              value={generateQRData(ticket)}
+              size={300} // Tăng kích thước
+              level="L" // Giảm độ phức tạp
+              includeMargin={true} // Thêm margin để dễ quét hơn
+            />
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Left Column */}
@@ -152,13 +153,13 @@ function Ticket() {
           </div>
 
           {/* Concession Info */}
-          <div className="mt-6 p-3 bg-gray-50 rounded-lg">
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
             <p className="font-semibold text-gray-600">Đồ uống: </p>
             <p className="text-base">{ticket.concessionTicket}</p>
           </div>
 
           {/* Footer Section */}
-          <div className="mt-6 pt-4 border-t-2 border-dashed border-gray-300">
+          <div className="mt-4 pt-4 border-t-2 border-dashed border-gray-300">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <p className="font-semibold text-gray-600">
@@ -168,27 +169,16 @@ function Ticket() {
                 <p className="text-sm">{ticket.phoneNumber}</p>
                 <p className="text-sm">{ticket.emailUser}</p>
               </div>
-              <div className="flex flex-col items-end justify-between">
-                <div className="text-right">
-                  <p className="font-semibold text-gray-600">Tổng tiền</p>
-                  <p className="text-xl font-bold text-red-600">
-                    {ticket.totalPrice.toLocaleString()}đ
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Ngày thanh toán:{" "}
-                    {format(new Date(ticket.paymentDate), "dd/MM/yyyy HH:mm")}
-                  </p>
-                </div>
-                {/* QR Code */}
-                <div className="mt-2">
-                  <div className="mt-2">
-                    <QRCodeSVG
-                      value={generateQRData(ticket)}
-                      size={100}
-                      level="H"
-                    />
-                  </div>
-                </div>
+
+              <div className="text-right">
+                <p className="font-semibold text-gray-600">Tổng tiền</p>
+                <p className="text-xl font-bold text-red-600">
+                  {ticket.totalPrice.toLocaleString()}đ
+                </p>
+                <p className="text-xs text-gray-500">
+                  Ngày thanh toán:{" "}
+                  {format(new Date(ticket.paymentDate), "dd/MM/yyyy HH:mm")}
+                </p>
               </div>
             </div>
           </div>

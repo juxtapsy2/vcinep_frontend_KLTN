@@ -1,104 +1,59 @@
-import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import { QrReader } from "react-qr-reader";
 
 function Test() {
-  const [amount, setAmount] = useState("");
-  const [orderDescription, setOrderDescription] = useState("");
-  const [orderType, setOrderType] = useState("product");
-  const [bankCode, setBankCode] = useState("");
-  const [language, setLanguage] = useState("vn");
-  const [paymentUrl, setPaymentUrl] = useState("");
+  const [isScanning, setIsScanning] = useState(false);
+  const [result, setResult] = useState("");
 
-  const amountRef = useRef();
-  const orderDescriptionRef = useRef();
-  const orderTypeRef = useRef();
-  const bankCodeRef = useRef();
-
-  // Gửi yêu cầu đến backend để xử lý thanh toán VNPAY
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const paymentData = {
-      amount: amount,
-      orderDescription: orderDescription,
-      orderType: orderType,
-      bankCode: bankCode,
-      language: language,
-    };
-
-    try {
-      const response = await axios.post(
-        "http://localhost:8800/api/payment/vnpay",
-        paymentData
-      );
-      setPaymentUrl(response.data.vnpayUrl); // Lưu URL thanh toán
-    } catch (error) {
-      console.error("Error during payment request:", error);
+  const handleScan = (data) => {
+    if (data) {
+      setResult(data?.text || "");
+      setIsScanning(false);
     }
   };
 
-  // Chuyển hướng người dùng đến VNPAY khi có URL thanh toán
-  useEffect(() => {
-    if (paymentUrl) {
-      window.location.href = paymentUrl;
-    }
-  }, [paymentUrl]);
+  const handleError = (err) => {
+    console.error(err);
+  };
+
   return (
-    <div className="payment-form">
-      <h2>Thanh toán qua VNPAY</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Số tiền:</label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            ref={amountRef}
-            required
-          />
-        </div>
-        <div>
-          <label>Mô tả đơn hàng:</label>
-          <input
-            type="text"
-            value={orderDescription}
-            onChange={(e) => setOrderDescription(e.target.value)}
-            ref={orderDescriptionRef}
-            required
-          />
-        </div>
-        <div>
-          <label>Loại đơn hàng:</label>
-          <input
-            type="text"
-            value={orderType}
-            onChange={(e) => setOrderType(e.target.value)}
-            ref={orderTypeRef}
-          />
-        </div>
-        <div>
-          <label>Mã ngân hàng (Tùy chọn):</label>
-          <input
-            type="text"
-            value={bankCode}
-            onChange={(e) => setBankCode(e.target.value)}
-            ref={bankCodeRef}
-          />
-        </div>
-        <div>
-          <label>Ngôn ngữ:</label>
-          <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
+    <div className="min-h-screen bg-gray-100 p-4">
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+        <div className="p-6">
+          <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
+            QR Code Scanner
+          </h2>
+
+          <button
+            onClick={() => setIsScanning(!isScanning)}
+            className="w-full mb-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
           >
-            <option value="vn">Tiếng Việt</option>
-            <option value="en">Tiếng Anh</option>
-          </select>
+            {isScanning ? "Dừng quét" : "Bắt đầu quét"}
+          </button>
+
+          {isScanning && (
+            <div className="relative w-full aspect-square mb-4">
+              <QrReader
+                constraints={{
+                  facingMode: "environment",
+                }}
+                onResult={handleScan}
+                onError={handleError}
+                className="w-full h-full"
+              />
+            </div>
+          )}
+
+          {result && (
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold mb-2">Kết quả:</h3>
+              <div className="p-3 bg-gray-100 rounded-lg break-all">
+                {result}
+              </div>
+            </div>
+          )}
         </div>
-        <div>
-          <button type="submit">Thanh toán</button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 }

@@ -63,7 +63,7 @@ function Header() {
                       {user.username}
                     </a>
                     <div className="avatar-container">
-                      <Link to="/profile">
+                      <Link to="/account">
                         <img
                           className="avatar"
                           src={

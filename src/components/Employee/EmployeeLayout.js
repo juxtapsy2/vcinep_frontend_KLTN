@@ -2,19 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faUser,
-  faFilm,
-  faCalendarAlt,
-  faCogs,
+  faTachometerAlt,
+  faTicketAlt,
+  faUserCheck,
   faBars,
   faSignOutAlt,
-  faTachometerAlt,
-  faNewspaper,
-  faUsers,
   faClock,
-  faCoffee,
-  faTicketAlt,
-  faVideo,
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../image/LogoVCineP.png";
 import { useAuth } from "../../contexts/AuthContext.js";
@@ -22,7 +15,7 @@ import toast, { Toaster } from "react-hot-toast";
 import Breadcrumb from "../Admin/Breadcumb.js";
 import { getCinemaById } from "../../api/CinemaAPI.js";
 import { se } from "date-fns/locale";
-function ManagerLayout({ children }) {
+function EmployeeLayout({ children }) {
   const { user, logout } = useAuth();
   const [cinema, setCinema] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -59,50 +52,20 @@ function ManagerLayout({ children }) {
 
   const menuItems = [
     {
-      path: "/manage/dashboard",
-      icon: faTachometerAlt, // Biểu tượng Dashboard
+      path: "/employee/dashboard",
+      icon: faTachometerAlt,
       label: "Dashboard",
     },
     {
-      path: "/manage/blog",
-      icon: faNewspaper, // Biểu tượng Blog
-      label: "Blog",
+      path: "/employee/ticketcounter",
+      icon: faTicketAlt,
+      label: "Đặt vé tại quầy",
     },
     {
-      path: "/manage/employee",
-      icon: faUsers, // Biểu tượng Người dùng
-      label: "Nhân viên",
+      path: "/employee/checkin",
+      icon: faUserCheck,
+      label: "Checkin vé",
     },
-    {
-      path: "/manage/movies",
-      icon: faFilm, // Biểu tượng Phim
-      label: "Phim",
-    },
-    // {
-    //   path: "/manage/concession",
-    //   icon: faCoffee, // Biểu tượng Đồ uống (cà phê)
-    //   label: "Đồ uống",
-    // },
-    {
-      path: "/manage/ticket",
-      icon: faTicketAlt, // Biểu tượng Vé
-      label: "Vé",
-    },
-    {
-      path: "/manage/showtimes",
-      icon: faCalendarAlt, // Biểu tượng Suất chiếu (biểu tượng lịch)
-      label: "Suất chiếu",
-    },
-    {
-      path: "/manage/cinemas",
-      icon: faVideo, // Biểu tượng Rạp
-      label: "Rạp",
-    },
-    // {
-    //   path: "/manage/settings",
-    //   icon: faCogs, // Biểu tượng Cài đặt
-    //   label: "Cài đặt",
-    // },
   ];
 
   // Format the current time
@@ -174,7 +137,7 @@ function ManagerLayout({ children }) {
                 <FontAwesomeIcon icon={faBars} className="w-6 h-6" />
               </button>
               <span className="ml-4 text-lg font-semibold text-gray-800">
-                Xin chào Quản lý, {user?.username} - {cinema?.name}
+                Xin chào Nhân Viên, {user?.username} - {cinema?.name}
               </span>
             </div>
             <div className="flex items-center">
@@ -209,4 +172,4 @@ function ManagerLayout({ children }) {
   );
 }
 
-export default ManagerLayout;
+export default EmployeeLayout;
