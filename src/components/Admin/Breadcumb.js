@@ -30,9 +30,9 @@ const Breadcrumb = ({ customPaths }) => {
       manage: "Quản lý",
       ticketcounter: "Đặt vé tại quầy",
       checkin: "Checkin",
+      theater: "Rạp",
       ...customPaths, // Allow custom path mappings to be passed as props
     };
-
     return pathnames.map((path, index) => {
       const routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
       const isLast = index === pathnames.length - 1;

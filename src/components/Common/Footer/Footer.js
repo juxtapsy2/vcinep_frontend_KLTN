@@ -125,9 +125,7 @@ const Footer = () => {
 
         <div className="company-info">
           <h4 className="glow-text">CÔNG TY CỔ PHẦN VCINEP</h4>
-          <p>
-            3/9 Võ Văn Tần, Phường Võ Thị Sáu, Quận 3, Tp. Hồ Chí Minh, Việt Nam
-          </p>
+          <p>Nguyễn Đại Phúc - Nguyễn Dương Thế Vĩ</p>
           <p className="contact-info">
             <span className="highlight">028.39.333.303</span> •
             <span className="highlight">19002224</span> (9:00 - 22:00) •

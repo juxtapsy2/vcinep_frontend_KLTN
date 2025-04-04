@@ -35,6 +35,7 @@ function ManagerShowtime() {
     fetchMovies();
     fetchCinemas();
   }, []);
+
   useEffect(() => {
     fetchShowtimes();
   }, [currentPage, filters]);

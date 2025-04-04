@@ -44,6 +44,7 @@ import DashboardEmployee from "../pages/employee/DashboardEmployee";
 import TicketCounterEmployee from "../pages/employee/TicketCounterEmployee";
 import CheckinEmployee from "../pages/employee/CheckinEmployee";
 import ManageEmployee from "../pages/manager/ManageEmployee";
+import DetailCheckInEmployee from "../pages/employee/DetailCheckInEmployee";
 
 export const publicRoutes = [
   {
@@ -374,6 +375,12 @@ export const employeeRoutes = [
   {
     path: "/employee/checkin",
     component: CheckinEmployee,
+    roles: ["Employee"],
+    protected: true,
+  },
+  {
+    path: "/employee/checkin/:id",
+    component: DetailCheckInEmployee,
     roles: ["Employee"],
     protected: true,
   },
