@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Eye } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 import { getAllShowtimes } from "../../api/ShowTimeAPI";
 import {
   getActiveCinemas,
@@ -12,6 +12,7 @@ import { getActiveMovies } from "../../api/MovieAPI";
 import { format } from "date-fns";
 function CheckinEmployee() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [showtimes, setShowtimes] = useState([]);
   const [movies, setMovies] = useState([]);
   const [cinemas, setCinemas] = useState([]);
@@ -205,7 +206,7 @@ function CheckinEmployee() {
               </tr>
             ) : (
               showtimes.map((showtime) => (
-                <tr key={showtime._id} className="hover:bg-gray-50">
+                <tr key={showtime.idShowTime} className="hover:bg-gray-50">
                   <td className="px-4 py-1 whitespace-nowrap">
                     <div
                       className="truncate max-w-[200px]"
@@ -239,7 +240,12 @@ function CheckinEmployee() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex gap-2">
-                      <button className="flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors">
+                      <button
+                        onClick={() => {
+                          navigate(`/employee/checkin/${showtime.idShowTime}`);
+                        }}
+                        className="flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
+                      >
                         <Eye className="h-4 w-4" />
                         View
                       </button>

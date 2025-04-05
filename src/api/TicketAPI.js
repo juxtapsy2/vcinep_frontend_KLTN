@@ -164,3 +164,21 @@ export const cancelTicket = async (ticketId) => {
     throw error;
   }
 };
+
+export const getTicketByShowtimeId = async (showtimeId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("Token không tồn tại, vui lòng đăng nhập lại.");
+    }
+    const res = await api.get(`/ticket/showtime/${showtimeId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy vé theo showtimeId:", error);
+    throw error;
+  }
+};

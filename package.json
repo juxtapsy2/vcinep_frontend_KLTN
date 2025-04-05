@@ -34,6 +34,7 @@
     "heroicons": "^2.1.5",
     "html-react-parser": "^5.1.18",
     "html2canvas": "^1.4.1",
+    "html5-qrcode": "^2.2.7",
     "jspdf": "^2.5.2",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.487.0",

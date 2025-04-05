@@ -102,20 +102,19 @@ function Ticket() {
           </div>
         </div>
 
-        <div className="p-6 pt-8">
+        <div className="p-3 pt-4">
           <h2 className="text-xl md:text-2xl font-bold text-red-800 text-center mb-6">
             {ticket.movieTitle}
           </h2>
 
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-3">
             <QRCodeSVG
               value={generateQRData(ticket)}
-              size={300} // Tăng kích thước
+              size={350} // Tăng kích thước
               level="L" // Giảm độ phức tạp
               includeMargin={true} // Thêm margin để dễ quét hơn
             />
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Left Column */}
             <div className="space-y-3">

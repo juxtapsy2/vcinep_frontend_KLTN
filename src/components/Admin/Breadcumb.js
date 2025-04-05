@@ -7,14 +7,18 @@ import { managerRoutes } from "../../routes/routes";
 const Breadcrumb = ({ customPaths }) => {
   const location = useLocation();
 
+  // Hàm kiểm tra MongoDB ObjectId
+  const isValidObjectId = (id) => {
+    const objectIdPattern = /^[0-9a-fA-F]{24}$/;
+    return objectIdPattern.test(id);
+  };
+
   const pathSegments = useMemo(() => {
-    // Remove trailing slash and split path
     const pathnames = location.pathname
       .replace(/\/$/, "")
       .split("/")
       .filter((x) => x);
 
-    // Create mapping for custom path names
     const pathMap = {
       admin: "Quản trị viên",
       dashboard: "Dashboard",
@@ -31,12 +35,16 @@ const Breadcrumb = ({ customPaths }) => {
       ticketcounter: "Đặt vé tại quầy",
       checkin: "Checkin",
       theater: "Rạp",
-      ...customPaths, // Allow custom path mappings to be passed as props
+      ...customPaths,
     };
+
     return pathnames.map((path, index) => {
       const routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
       const isLast = index === pathnames.length - 1;
-      const displayName = pathMap[path] || path;
+      // Kiểm tra nếu path là MongoDB ID thì hiển thị "Chi tiết"
+      const displayName = isValidObjectId(path)
+        ? "Chi tiết"
+        : pathMap[path] || path;
 
       return {
         name: displayName,
