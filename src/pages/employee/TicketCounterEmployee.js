@@ -6,12 +6,10 @@ function TicketCounterEmployee() {
   const [scanResult, setScanResult] = useState(null);
   const [ticketData, setTicketData] = useState(null);
   const [error, setError] = useState("");
-  const scannerRef = useRef(null);
   const html5QrCodeRef = useRef(null);
 
   useEffect(() => {
     return () => {
-      // Clean up the scanner when component unmounts
       if (html5QrCodeRef.current) {
         html5QrCodeRef.current
           .stop()
@@ -20,34 +18,32 @@ function TicketCounterEmployee() {
     };
   }, []);
 
-  // This effect initializes the scanner after the element is rendered
+  const initializeScanner = async () => {
+    try {
+      const config = {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+        aspectRatio: 1.0,
+      };
+
+      html5QrCodeRef.current = new Html5Qrcode("qr-reader");
+      await html5QrCodeRef.current.start(
+        { facingMode: "environment" },
+        config,
+        onScanSuccess,
+        onScanFailure
+      );
+    } catch (err) {
+      console.error("Error starting scanner:", err);
+      setError("Không thể khởi động máy quét: " + err.message);
+      setScanning(false);
+      html5QrCodeRef.current = null;
+    }
+  };
+
   useEffect(() => {
     if (scanning && !html5QrCodeRef.current) {
-      const qrReaderElement = document.getElementById("qr-reader");
-
-      if (qrReaderElement) {
-        const config = {
-          fps: 10,
-          qrbox: { width: 250, height: 250 },
-          aspectRatio: 1.0,
-        };
-
-        html5QrCodeRef.current = new Html5Qrcode("qr-reader");
-
-        html5QrCodeRef.current
-          .start(
-            { facingMode: "environment" }, // Use rear camera
-            config,
-            onScanSuccess,
-            onScanFailure
-          )
-          .catch((err) => {
-            console.error("Error starting scanner:", err);
-            setError("Không thể khởi động máy quét: " + err.message);
-            setScanning(false);
-            html5QrCodeRef.current = null;
-          });
-      }
+      initializeScanner();
     }
   }, [scanning]);
 
@@ -58,43 +54,31 @@ function TicketCounterEmployee() {
     setError("");
   };
 
-  const stopScanner = () => {
+  const stopScanner = async () => {
     if (html5QrCodeRef.current) {
-      html5QrCodeRef.current
-        .stop()
-        .then(() => {
-          setScanning(false);
-          html5QrCodeRef.current = null;
-        })
-        .catch((err) => {
-          console.error("Error stopping scanner:", err);
-        });
-    } else {
-      setScanning(false);
+      try {
+        await html5QrCodeRef.current.stop();
+        html5QrCodeRef.current = null;
+      } catch (err) {
+        console.error("Error stopping scanner:", err);
+      }
     }
+    setScanning(false);
   };
 
-  const onScanSuccess = (decodedText) => {
-    // Stop scanner after successful scan
-    stopScanner();
+  const onScanSuccess = async (decodedText) => {
+    await stopScanner();
     setScanResult(decodedText);
-
-    // Here you would typically fetch ticket data using the decoded text
     fetchTicketData(decodedText);
   };
 
   const onScanFailure = (error) => {
-    // Handle scan failure - usually don't need to do anything here
-    // console.warn(`Scan error: ${error}`);
+    // Silent failure
   };
 
   const fetchTicketData = async (ticketCode) => {
     try {
-      // Replace this with your actual API call
-      // const response = await getTicketByCode(ticketCode);
-      // setTicketData(response.data);
-
-      // Simulated ticket data for demonstration
+      // Simulated API call
       setTicketData({
         codeTicket: ticketCode,
         movieTitle: "Example Movie",
@@ -103,24 +87,46 @@ function TicketCounterEmployee() {
         nameCinema: "VCinep Cinema",
         nameTheater: "Theater 3",
         seatTicket: "G12",
-        status: "valid", // or "used" or "invalid"
+        status: "valid",
       });
     } catch (error) {
-      console.error("Error fetching ticket:", error);
       setError("Không thể lấy thông tin vé: " + error.message);
     }
   };
 
-  const validateTicket = () => {
-    // In a real app, this would make an API call to validate the ticket
-    alert(`Xác nhận vé ${scanResult} hợp lệ!`);
-    resetScanner();
+  const validateTicket = async () => {
+    try {
+      // Simulated API call
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      alert(`Xác nhận vé ${scanResult} hợp lệ!`);
+      resetScanner();
+    } catch (error) {
+      setError("Không thể xác nhận vé: " + error.message);
+    }
   };
 
   const resetScanner = () => {
     setScanResult(null);
     setTicketData(null);
     setError("");
+  };
+
+  const StatusBadge = ({ status }) => {
+    const statusConfig = {
+      valid: { text: "Hợp lệ", className: "bg-green-100 text-green-800" },
+      used: { text: "Đã sử dụng", className: "bg-red-100 text-red-800" },
+      invalid: { text: "Không hợp lệ", className: "bg-gray-100 text-gray-800" },
+    };
+
+    const config = statusConfig[status] || statusConfig.invalid;
+
+    return (
+      <span
+        className={`px-2 py-1 rounded-full text-sm font-medium ${config.className}`}
+      >
+        {config.text}
+      </span>
+    );
   };
 
   return (
@@ -146,7 +152,6 @@ function TicketCounterEmployee() {
             </button>
           ) : scanning ? (
             <div className="text-center">
-              {/* This div must be rendered before we initialize the scanner */}
               <div id="qr-reader" className="mx-auto w-full max-w-md"></div>
               <button
                 onClick={stopScanner}
@@ -158,79 +163,61 @@ function TicketCounterEmployee() {
           ) : null}
         </div>
 
-        {scanResult && (
-          <div className="border-2 border-gray-200 rounded-lg p-4 mb-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              Kết quả quét
+        {ticketData && (
+          <div className="border-2 border-gray-200 rounded-lg p-4">
+            <h2 className="text-lg font-semibold text-red-700 mb-3">
+              {ticketData.movieTitle}
             </h2>
-            <p className="text-gray-700 mb-2">
-              <span className="font-medium">Mã vé:</span> {scanResult}
-            </p>
 
-            {ticketData && (
-              <div className="mt-4 bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-red-700 mb-3">
-                  {ticketData.movieTitle}
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <p className="text-sm text-gray-600">Ngày chiếu:</p>
-                    <p className="font-medium">{ticketData.showDate}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Giờ chiếu:</p>
-                    <p className="font-medium">{ticketData.showTime}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Rạp:</p>
-                    <p className="font-medium">{ticketData.nameCinema}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Phòng:</p>
-                    <p className="font-medium">{ticketData.nameTheater}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Ghế:</p>
-                    <p className="font-medium text-red-600">
-                      {ticketData.seatTicket}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Trạng thái:</p>
-                    <p
-                      className={`font-medium ${
-                        ticketData.status === "valid"
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {ticketData.status === "valid"
-                        ? "Hợp lệ"
-                        : ticketData.status === "used"
-                        ? "Đã được sử dụng"
-                        : "Không hợp lệ"}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex justify-center mt-4 space-x-3">
-                  {ticketData.status === "valid" && (
-                    <button
-                      onClick={validateTicket}
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                    >
-                      Xác nhận vé
-                    </button>
-                  )}
-                  <button
-                    onClick={resetScanner}
-                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-                  >
-                    Quét lại
-                  </button>
-                </div>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <p className="text-sm text-gray-600">Mã vé</p>
+                <p className="font-medium">{ticketData.codeTicket}</p>
               </div>
-            )}
+              <div>
+                <p className="text-sm text-gray-600">Trạng thái</p>
+                <StatusBadge status={ticketData.status} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Ngày chiếu</p>
+                <p className="font-medium">{ticketData.showDate}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Giờ chiếu</p>
+                <p className="font-medium">{ticketData.showTime}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Rạp</p>
+                <p className="font-medium">{ticketData.nameCinema}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Phòng</p>
+                <p className="font-medium">{ticketData.nameTheater}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Ghế</p>
+                <p className="font-medium text-red-600">
+                  {ticketData.seatTicket}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-center space-x-3">
+              {ticketData.status === "valid" && (
+                <button
+                  onClick={validateTicket}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  Xác nhận vé
+                </button>
+              )}
+              <button
+                onClick={resetScanner}
+                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              >
+                Quét lại
+              </button>
+            </div>
           </div>
         )}
       </div>

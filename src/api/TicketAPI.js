@@ -182,3 +182,26 @@ export const getTicketByShowtimeId = async (showtimeId) => {
     throw error;
   }
 };
+//Add by The Vi 2025-4-6
+export const checkTicketValid = async (ticketCode) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("Token không tồn tại, vui lòng đăng nhập lại.");
+    }
+
+    const res = await api.post(
+      "/ticket/checkValid",
+      { code: ticketCode }, // body data
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    console.error("Lỗi khi kiểm tra tính hợp lệ của vé:", error);
+    throw error;
+  }
+};

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router";
+import { Html5Qrcode } from "html5-qrcode";
 import {
   Search,
   Ticket,
@@ -9,52 +10,134 @@ import {
   Filter,
   Camera,
   FileSpreadsheet,
-  Download,
+  X,
 } from "lucide-react";
-import { QrReader } from "react-qr-reader";
-// import "./DetailCheckInEmployee.css"; // Import your CSS file for styling
-
-import { getTicketByShowtimeId } from "../../api/TicketAPI";
-
+import { getTicketByShowtimeId, checkTicketValid } from "../../api/TicketAPI";
+import toast from "react-hot-toast";
+import ScannerModal from "../../components/Employee/ScannerModal";
 function DetailCheckInEmployee() {
   const { id } = useParams();
   const [ticketData, setTicketData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [selected, setSelected] = useState("environment");
-  const [startScan, setStartScan] = useState(false);
-  const [loadingScan, setLoadingScan] = useState(false);
-  const [data, setData] = useState("");
+  const [showScanner, setShowScanner] = useState(false);
 
-  const handleScan = async (scanData) => {
-    setLoadingScan(true);
-    console.log(`loaded data data`, scanData);
-    if (scanData && scanData !== "") {
-      console.log(`loaded >>>`, scanData);
-      setData(scanData);
-      setStartScan(false);
-      setLoadingScan(false);
-      // setPrecScan(scanData);
+  // QR Scanner states
+
+  const html5QrCodeRef = useRef(null);
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanStatus, setScanStatus] = useState({ message: "", type: "" });
+  const fetchTickets = async () => {
+    try {
+      const response = await getTicketByShowtimeId(id);
+
+      setTicketData(response.data);
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu vé:", error);
+    } finally {
+      setLoading(false);
     }
-  };
-  const handleError = (err) => {
-    console.error(err);
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getTicketByShowtimeId(id);
-        setTicketData(response.data);
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu vé:", error);
-      } finally {
-        setLoading(false);
+    fetchTickets();
+  }, [id]);
+  // QR Scanner cleanup
+  useEffect(() => {
+    return () => {
+      if (html5QrCodeRef.current) {
+        html5QrCodeRef.current
+          .stop()
+          .catch((err) => console.error("Failed to stop camera:", err));
       }
     };
-    fetchData();
-  }, [id]);
+  }, []);
+
+  const initializeScanner = async () => {
+    try {
+      const config = {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+        aspectRatio: 1.0,
+        // Thêm cấu hình để giảm tần suất quét
+        disableFlip: false,
+        formatsToSupport: ["QR_CODE"],
+      };
+
+      html5QrCodeRef.current = new Html5Qrcode("qr-reader");
+      await html5QrCodeRef.current.start(
+        { facingMode: "environment" },
+        config,
+        onScanSuccess,
+        onScanFailure
+      );
+    } catch (err) {
+      console.error("Error starting scanner:", err);
+      setScanStatus({
+        message: "Không thể khởi động máy quét: " + err.message,
+        type: "error",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (showScanner) {
+      initializeScanner();
+    }
+  }, [showScanner]);
+
+  const onScanSuccess = async (decodedText) => {
+    // Kiểm tra nếu đang trong thời gian chờ thì bỏ qua
+    if (isScanning) return;
+
+    // Đánh dấu đang trong quá trình xử lý
+    setIsScanning(true);
+
+    try {
+      // Xử lý check-in
+      const response = await checkTicketValid(decodedText);
+      if (response.success) {
+        toast.success("Check-in thành công!");
+        await stopScanner();
+        fetchTickets();
+      } else {
+        // toast.error("Vé không hợp lệ!");
+        setScanStatus({ message: "Vé không hợp lệ!", type: "error" });
+
+        // Đặt timeout 5 giây trước khi cho phép quét tiếp
+        setTimeout(() => {
+          setIsScanning(false);
+          setScanStatus({ message: "", type: "" });
+        }, 5000);
+      }
+    } catch (error) {
+      toast.error("Vé không hợp lệ!");
+      setScanStatus({ message: "Vé không hợp lệ!", type: "error" });
+
+      // Đặt timeout 5 giây trước khi cho phép quét tiếp
+      setTimeout(() => {
+        setIsScanning(false);
+        setScanStatus({ message: "", type: "" });
+      }, 5000);
+    }
+  };
+
+  const onScanFailure = (error) => {
+    // Silent failure
+  };
+  const stopScanner = async () => {
+    if (html5QrCodeRef.current) {
+      try {
+        await html5QrCodeRef.current.stop();
+        html5QrCodeRef.current = null;
+      } catch (err) {
+        console.error("Error stopping scanner:", err);
+      }
+    }
+    setShowScanner(false);
+    setScanStatus({ message: "", type: "" });
+  };
 
   const getStatusColor = (status, checkinStatus, isCancelled) => {
     if (isCancelled) return "bg-gray-100 text-gray-600";
@@ -73,41 +156,6 @@ function DetailCheckInEmployee() {
 
   return (
     <div className="min-h-screen bg-white p-6">
-      <div className="App">
-        <h1>Hello CodeSandbox</h1>
-        <h2>
-          Last Scan:
-          {selected}
-        </h2>
-
-        <button
-          onClick={() => {
-            setStartScan(!startScan);
-          }}
-        >
-          {startScan ? "Stop Scan" : "Start Scan"}
-        </button>
-        {startScan && (
-          <>
-            <select onChange={(e) => setSelected(e.target.value)}>
-              <option value={"environment"}>Back Camera</option>
-              <option value={"user"}>Front Camera</option>
-            </select>
-            <QrReader
-              facingMode={selected}
-              delay={1000}
-              onError={handleError}
-              onScan={handleScan}
-              className="w-[200px] h-[200px]"
-              // chooseDeviceId={()=>selected}
-              style={{ width: "300px" }}
-            />
-          </>
-        )}
-        {loadingScan && <p>Loading</p>}
-        {data !== "" && <p>{data}</p>}
-      </div>
-
       {/* Dashboard Section */}
       <div className="mb-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -189,7 +237,7 @@ function DetailCheckInEmployee() {
         </div>
         <div className="flex gap-3">
           <button
-            // onClick={() => setShowScanner(true)}
+            onClick={() => setShowScanner(true)}
             className="px-4 py-2 bg-[#D33027] text-white rounded-lg flex items-center gap-2 hover:bg-red-700 transition-colors"
           >
             <Camera className="w-5 h-5" />
@@ -263,20 +311,30 @@ function DetailCheckInEmployee() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     {ticket.totalPrice?.toLocaleString("vi-VN")}đ
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                        ticket.status,
-                        ticket.checkinStatus,
-                        ticket.isCancelled
-                      )}`}
-                    >
-                      {getStatusText(
-                        ticket.status,
-                        ticket.checkinStatus,
-                        ticket.isCancelled
-                      )}
-                    </span>
+                  <td className="px-6 py-4">
+                    <div className="flex flex-col gap-1">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                          ticket.status,
+                          ticket.checkinStatus,
+                          ticket.isCancelled
+                        )}`}
+                      >
+                        {getStatusText(
+                          ticket.status,
+                          ticket.checkinStatus,
+                          ticket.isCancelled
+                        )}
+                      </span>
+                      {ticket.checkinStatus === "checked_in" &&
+                        ticket.date_checkin && (
+                          <span className="text-xs text-gray-500">
+                            {new Date(ticket.date_checkin).toLocaleString(
+                              "vi-VN"
+                            )}
+                          </span>
+                        )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -284,8 +342,11 @@ function DetailCheckInEmployee() {
           </table>
         </div>
       </div>
+      {/* QR Scanner Modal */}
+      {showScanner && (
+        <ScannerModal scanStatus={scanStatus} stopScanner={stopScanner} />
+      )}
     </div>
   );
 }
-
 export default DetailCheckInEmployee;
