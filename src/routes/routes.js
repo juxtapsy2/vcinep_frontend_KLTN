@@ -39,7 +39,6 @@ import CinemaDetail from "../pages/CinemaDetail";
 import ManagerAddBlog from "../pages/manager/ManagerAddBlog";
 import EditMovie from "../pages/admin/EditMovie";
 import ManagerTickets from "../pages/manager/ManagerTicket";
-import TestEmployee from "../pages/employee/Test";
 import DashboardEmployee from "../pages/employee/DashboardEmployee";
 import TicketCounterEmployee from "../pages/employee/TicketCounterEmployee";
 import CheckinEmployee from "../pages/employee/CheckinEmployee";
@@ -381,12 +380,6 @@ export const employeeRoutes = [
   {
     path: "/employee/checkin/:id",
     component: DetailCheckInEmployee,
-    roles: ["Employee"],
-    protected: true,
-  },
-  {
-    path: "/employee",
-    component: TestEmployee,
     roles: ["Employee"],
     protected: true,
   },

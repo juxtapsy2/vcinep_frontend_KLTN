@@ -6,6 +6,7 @@ import Promotion from "../components/Common/Promotion/Promotion";
 import Description from "../components/Common/Description/Description.js";
 import * as MovieAPI from "../api/MovieAPI.js";
 import LoadingEffects from "../components/LoadingEffect.js";
+import Suggestion from "../components/Common/SuggestionMovie/Suggestion.js";
 
 const Home = () => {
   const [nowShowingMovies, setNowShowingMovies] = useState([]);
@@ -74,6 +75,7 @@ const Home = () => {
           <QuickBookingBar />
           <MovieList title="Phim đang chiếu" movies={nowShowingMovies} />
           <MovieList title="Phim sắp chiếu" movies={comingSoonMovies} />
+          <Suggestion />
           <Promotion items={items} />
           <Description />
         </>
