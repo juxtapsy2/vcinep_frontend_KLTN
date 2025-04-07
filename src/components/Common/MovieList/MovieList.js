@@ -12,7 +12,7 @@ function MovieList({ title, movies }) {
         </div>
         <a
           className="text-red-600 font-semibold text-sm sm:text-base hover:text-red-700 transition-colors duration-300"
-          href="/movies"
+          href="/movie"
         >
           Xem tất cả
         </a>

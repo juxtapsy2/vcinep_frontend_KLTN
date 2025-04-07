@@ -15,6 +15,8 @@ import {
   faCoffee,
   faTicketAlt,
   faVideo,
+  faMoneyBillWave,
+  faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../image/LogoVCineP.png";
 import { useAuth } from "../../contexts/AuthContext.js";
@@ -55,49 +57,54 @@ function AdminLayout({ children }) {
   const menuItems = [
     {
       path: "/admin/dashboard",
-      icon: faTachometerAlt, // Biểu tượng Dashboard
+      icon: faTachometerAlt,
       label: "Dashboard",
     },
     {
       path: "/admin/blog",
-      icon: faNewspaper, // Biểu tượng Blog
+      icon: faNewspaper,
       label: "Blog",
     },
     {
       path: "/admin/users",
-      icon: faUsers, // Biểu tượng Người dùng
+      icon: faUsers,
       label: "Người dùng",
     },
     {
+      path: "/admin/employees",
+      icon: faUserTie,
+      label: "Nhân viên",
+    },
+    {
       path: "/admin/movies",
-      icon: faFilm, // Biểu tượng Phim
+      icon: faFilm,
       label: "Phim",
     },
     {
       path: "/admin/concession",
-      icon: faCoffee, // Biểu tượng Đồ uống (cà phê)
+      icon: faCoffee,
       label: "Đồ uống",
     },
     {
       path: "/admin/ticket",
-      icon: faTicketAlt, // Biểu tượng Vé
+      icon: faTicketAlt,
       label: "Vé",
     },
     {
+      path: "/admin/pricing",
+      icon: faMoneyBillWave,
+      label: "Giá vé",
+    },
+    {
       path: "/admin/showtimes",
-      icon: faCalendarAlt, // Biểu tượng Suất chiếu (biểu tượng lịch)
+      icon: faCalendarAlt,
       label: "Suất chiếu",
     },
     {
       path: "/admin/cinemas",
-      icon: faVideo, // Biểu tượng Rạp
+      icon: faVideo,
       label: "Rạp",
     },
-    // {
-    //   path: "/admin/settings",
-    //   icon: faCogs, // Biểu tượng Cài đặt
-    //   label: "Cài đặt",
-    // },
   ];
 
   // Format the current time

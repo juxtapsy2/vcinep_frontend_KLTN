@@ -44,7 +44,7 @@ import TicketCounterEmployee from "../pages/employee/TicketCounterEmployee";
 import CheckinEmployee from "../pages/employee/CheckinEmployee";
 import ManageEmployee from "../pages/manager/ManageEmployee";
 import DetailCheckInEmployee from "../pages/employee/DetailCheckInEmployee";
-
+import ManagePricing from "../pages/admin/TicketPricing";
 export const publicRoutes = [
   {
     path: "/",
@@ -256,6 +256,12 @@ export const adminRoutes = [
   {
     path: "/admin/ticket/",
     component: ManageTickets,
+    roles: ["Admin"], // Guest route
+    protected: true,
+  },
+  {
+    path: "/admin/pricing/",
+    component: ManagePricing,
     roles: ["Admin"], // Guest route
     protected: true,
   },
