@@ -36,6 +36,8 @@ const Breadcrumb = ({ customPaths }) => {
       checkin: "Checkin",
       theater: "Rạp",
       pricing: "Giá vé",
+      edit: "Chỉnh sửa",
+      add: "Thêm mới",
       ...customPaths,
     };
 

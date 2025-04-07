@@ -1,13 +1,14 @@
 // src/utils/RouteGuard.js
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import LoadingEffect from "../components/LoadingEffect";
 
 export const RouteGuard = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
 
   // Thêm xử lý loading state
   if (loading) {
-    return <div>Loading...</div>; // hoặc component loading của bạn
+    return <LoadingEffect />; // hoặc component loading của bạn
   }
 
   // Với Guest routes

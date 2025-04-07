@@ -8,15 +8,19 @@ import { MdOutlineNotifications } from "react-icons/md";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { RiCloseLargeFill } from "react-icons/ri";
 import { IoMdSettings } from "react-icons/io";
-import { IoIosPricetag } from "react-icons/io";
+// import { RiUserSettingsLine } from "react-icons/io";
+import { FaUserCircle } from "react-icons/fa";
+
 import { menuItems } from "../../constants/constants.js";
 import React, { useState } from "react";
 import "./Header.css";
 import { renderMenuItem, renderMobileMenuItem } from "./HeaderNavItem.js";
 import toast, { Toaster } from "react-hot-toast";
+
 function Header() {
   const { user, logout } = useAuth();
   const accessToken = localStorage.getItem("accessToken");
+
   const handleLogout = () => {
     logout();
     localStorage.removeItem("accessToken");
@@ -29,9 +33,29 @@ function Header() {
     });
     window.location.href = "/login";
   };
+
   const isAuthenticated =
     user && user.username && user.username !== "" && accessToken;
   const [isOpen, setIsOpen] = useState(false);
+
+  // Function to determine management page based on role
+  const getManagementLink = (role) => {
+    switch (role) {
+      case "Admin":
+        return "/admin";
+      case "Manager":
+        return "/manage";
+      case "Employee":
+        return "/employee";
+      default:
+        return "/";
+    }
+  };
+
+  const canAccessManagement = ["Admin", "Manager", "Employee"].includes(
+    user?.role
+  );
+
   return (
     <header className="header">
       <Toaster />
@@ -53,9 +77,6 @@ function Header() {
             </div>
             <div className="nav-right">
               <div className="nav-icons">
-                {/* <Link to="/search">
-                  <MdOutlineSearch className="icon search-icon" />
-                </Link> */}
                 <MdOutlineNotifications className="icon notification-icon" />
                 {isAuthenticated ? (
                   <>
@@ -78,31 +99,24 @@ function Header() {
                         <li>
                           <Link to="/account" className="dropdown-item">
                             <span className="dropdown-icon">
-                              <IoMdSettings />
+                              <FaUserCircle />
                             </span>
                             <span className="dropdown-text">Tài khoản</span>
                           </Link>
                         </li>
-                        {user.role === "" && (
+                        {canAccessManagement && (
                           <li>
-                            <Link to="/manage-movies" className="dropdown-item">
+                            <Link
+                              to={getManagementLink(user.role)}
+                              className="dropdown-item"
+                            >
                               <span className="dropdown-icon">
                                 <IoMdSettings />
                               </span>
-                              <span className="dropdown-text">
-                                Quản lý phim hệ thống
-                              </span>
+                              <span className="dropdown-text">Quản lý</span>
                             </Link>
                           </li>
                         )}
-                        {/* <li>
-                          <Link to="/signin" className="dropdown-item">
-                            <span className="dropdown-icon">
-                              <IoIosPricetag />
-                            </span>
-                            <span className="dropdown-text">Khuyến mãi</span>
-                          </Link>
-                        </li> */}
                         <li>
                           <button
                             className="dropdown-item"
