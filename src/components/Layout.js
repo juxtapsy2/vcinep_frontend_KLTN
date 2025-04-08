@@ -9,7 +9,7 @@ function Layout({ children }) {
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-grow" style={{ paddingTop: "4.6rem" }}>
-        <ChatBot />
+        {/* <ChatBot /> */}
         <Messenger />
         {children}
       </main>
