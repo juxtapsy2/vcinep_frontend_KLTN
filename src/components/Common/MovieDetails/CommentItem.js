@@ -1,116 +1,167 @@
-import React, { useState } from "react";
-import { formatDistanceToNow } from "date-fns";
-import { vi } from "date-fns/locale";
+// CommentItem.js
+import React from "react";
+
 const CommentItem = ({
   comment,
-  currentUser,
-  onEdit,
-  onDelete,
-  openMenuId,
-  onMenuClick,
+  depth = 0,
+  user,
+  editingComment,
+  editContent,
+  setEditContent,
+  handleUpdateComment,
+  setEditingComment,
+  replyingTo,
+  handleReply,
+  handleDeleteComment,
+  replyContent,
+  setReplyContent,
+  handleSubmitComment,
+  commentInputRef,
+  formatDate,
+  handleEdit,
+  setReplyingTo,
 }) => {
-  const [editContent, setEditContent] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
-
-  const handleEditClick = () => {
-    setIsEditing(true);
-    setEditContent(comment?.content);
-    onMenuClick(null);
-  };
-
-  const handleSaveEdit = () => {
-    onEdit(comment?._id, editContent);
-    setIsEditing(false);
-  };
+  const isOwner = user && comment.user._id === user._id;
+  const isEditing = editingComment === comment._id;
 
   return (
-    <div className="group relative flex gap-6 p-6 bg-white rounded-xl border border-gray-100 shadow-sm  transition-all duration-300 hover:border-red-200">
-      <div className="flex-shrink-0">
-        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-red-200 group-hover:border-red-400 transition-colors duration-300">
-          <img
-            src={comment.user?.avatar || "/default-avatar.png"}
-            alt="Avatar"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div>
+    <div
+      key={comment._id}
+      className={`mt-4 ${
+        depth > 0 ? "ml-8 border-l-2 border-gray-200 pl-4" : ""
+      }`}
+    >
+      <div className="flex items-start">
+        <img
+          src={comment.user.avatar || "https://via.placeholder.com/40"}
+          alt={comment.user.email}
+          className="w-10 h-10 rounded-full mr-3"
+        />
+        <div className="flex-1">
+          <div className="bg-gray-100 rounded-lg p-3">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-sm">
+                {comment.user.username} {isOwner && "(Bạn)"}
+              </span>
+              <span className="text-xs text-gray-500">
+                {formatDate(comment.createdAt)}
+              </span>
+            </div>
 
-      <div className="flex-1">
-        <div className="flex items-start justify-between mb-3">
-          <h3 className="font-semibold text-lg text-gray-900 group-hover:text-red-600 transition-colors duration-300">
-            {comment.user?.email.split("@")[0]}
-          </h3>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-400 italic">
-              {formatDistanceToNow(new Date(comment.createdAt), {
-                addSuffix: true,
-                locale: vi,
-              })}
-            </span>
-            {currentUser && currentUser?._id === comment.user?._id && (
-              <div className="relative">
-                <button
-                  className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-500 bg-gray-50 rounded-full hover:bg-gray-100 transition-all duration-300"
-                  onClick={() => onMenuClick(comment?._id)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+            {isEditing ? (
+              <div className="mt-2">
+                <textarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  className="w-full p-2 border rounded"
+                  rows="2"
+                />
+                <div className="flex justify-end space-x-2 mt-2">
+                  <button
+                    onClick={() => setEditingComment(null)}
+                    className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800"
                   >
-                    <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                  </svg>
-                </button>
-                {openMenuId === comment?._id && (
-                  <div className="absolute right-0 mt-2 w-32 bg-white border rounded-lg shadow-lg z-10">
-                    <button
-                      onClick={handleEditClick}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-t-lg"
-                    >
-                      Chỉnh sửa
-                    </button>
-                    <button
-                      onClick={() => onDelete(comment?._id)}
-                      className="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 rounded-b-lg"
-                    >
-                      Xóa
-                    </button>
-                  </div>
-                )}
+                    Hủy
+                  </button>
+                  <button
+                    onClick={() => handleUpdateComment(comment._id)}
+                    className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                  >
+                    Lưu
+                  </button>
+                </div>
               </div>
+            ) : (
+              <p className="mt-1 text-sm">{comment.content}</p>
             )}
           </div>
-        </div>
 
-        {isEditing ? (
-          <div className="space-y-2">
-            <textarea
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
-              className="w-full p-2 border rounded-lg focus:border-red-300 focus:ring-2 focus:ring-red-100"
-            />
-            <div className="flex gap-2">
+          <div className="flex items-center mt-1 space-x-4 text-xs">
+            {user && (
               <button
-                onClick={handleSaveEdit}
-                className="px-4 py-1 text-sm text-white bg-red-500 rounded-full hover:bg-red-600"
+                onClick={() => handleReply(comment._id)}
+                className="text-gray-500 hover:text-gray-700"
               >
-                Lưu
+                Phản hồi
               </button>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="px-4 py-1 text-sm text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200"
-              >
-                Hủy
-              </button>
-            </div>
+            )}
+
+            {isOwner && (
+              <>
+                <button
+                  onClick={() => handleEdit(comment)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  Chỉnh sửa
+                </button>
+                <button
+                  onClick={() => handleDeleteComment(comment._id)}
+                  className="text-gray-500 hover:text-red-500"
+                >
+                  Xóa
+                </button>
+              </>
+            )}
           </div>
-        ) : (
-          <p className="text-gray-600 leading-relaxed text-base group-hover:text-gray-800 transition-colors duration-300">
-            {comment?.content}
-          </p>
-        )}
+
+          {replyingTo === comment._id && (
+            <div className="mt-3">
+              <form onSubmit={handleSubmitComment}>
+                <textarea
+                  ref={commentInputRef}
+                  value={replyContent}
+                  onChange={(e) => setReplyContent(e.target.value)}
+                  placeholder="Viết phản hồi..."
+                  className="w-full p-2 border rounded"
+                  rows="2"
+                />
+                <div className="flex justify-end space-x-2 mt-2">
+                  <button
+                    type="button"
+                    onClick={() => setReplyingTo(null)}
+                    className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800"
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                  >
+                    Gửi
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+        </div>
       </div>
+
+      {comment.replies && comment.replies.length > 0 && (
+        <div className="mt-2">
+          {comment.replies.map((reply) => (
+            <CommentItem
+              key={reply._id}
+              comment={reply}
+              depth={depth + 1}
+              user={user}
+              editingComment={editingComment}
+              editContent={editContent}
+              setEditContent={setEditContent}
+              handleUpdateComment={handleUpdateComment}
+              setEditingComment={setEditingComment}
+              replyingTo={replyingTo}
+              handleReply={handleReply}
+              handleDeleteComment={handleDeleteComment}
+              replyContent={replyContent}
+              setReplyContent={setReplyContent}
+              handleSubmitComment={handleSubmitComment}
+              commentInputRef={commentInputRef}
+              formatDate={formatDate}
+              handleEdit={handleEdit}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

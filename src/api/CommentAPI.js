@@ -1,11 +1,11 @@
 import api from "../config/api.js";
 
-export const addComment = async (movie, user, content) => {
+export const addComment = async (parentComment, movie, user, content) => {
   try {
     const token = localStorage.getItem("accessToken"); // Lấy token từ localStorage
     const res = await api.post(
       "/comment",
-      { movie, user, content },
+      { parentComment, movie, user, content },
       {
         headers: {
           Authorization: `Bearer ${token}`,

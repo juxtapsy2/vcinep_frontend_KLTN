@@ -5,6 +5,7 @@ import {
 } from "../../../api/ShowTimeAPI.js";
 import { useNavigate } from "react-router-dom";
 import LoadingEffect from "../../LoadingEffect.js";
+import NotShowtimes from "./NotShowtimes.js";
 
 const MovieShowtimes = ({ movieSlug, name }) => {
   const [state, setState] = useState({
@@ -196,13 +197,7 @@ const MovieShowtimes = ({ movieSlug, name }) => {
         Lịch Chiếu - {name}
       </h1>
       {!state.availableDates.length ? (
-        <div className="bg-white rounded-lg p-6 mb-8 border border-red-200">
-          <div className="text-center py-8">
-            <p className="text-gray-500 text-lg">
-              Hiện tại phim không có suất chiếu nào !
-            </p>
-          </div>
-        </div>
+        <NotShowtimes />
       ) : (
         <div className="bg-white rounded-lg p-6 mb-8 border border-red-200">
           <div className="flex justify-center mb-3 overflow-x-auto whitespace-nowrap">
