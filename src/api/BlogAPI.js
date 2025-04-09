@@ -78,3 +78,14 @@ export const getAllBlogs = async (page = 1, limit = 10, title = "") => {
     throw error;
   }
 };
+
+// Tăng view của blog
+export const incrementBlogView = async (slug) => {
+  try {
+    const res = await api.put(`/blog/${slug}/increment-view`);
+    return res.data;
+  } catch (error) {
+    console.error(`Lỗi khi tăng view cho blog "${slug}":`, error);
+    throw error;
+  }
+};

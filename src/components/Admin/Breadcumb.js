@@ -38,6 +38,7 @@ const Breadcrumb = ({ customPaths }) => {
       pricing: "Giá vé",
       edit: "Chỉnh sửa",
       add: "Thêm mới",
+      employees: "Nhân viên",
       ...customPaths,
     };
 

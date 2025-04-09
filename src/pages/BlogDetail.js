@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
-import { getBlogBySlug } from "../api/BlogAPI";
+import { getBlogBySlug, incrementBlogView } from "../api/BlogAPI";
 import { getTopRatedMovies } from "../api/MovieAPI";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
@@ -27,6 +27,7 @@ function BlogDetail() {
         // Fetch top movies
         const moviesResponse = await getTopRatedMovies();
         setTopMovies(moviesResponse.data);
+        await incrementBlogView(slug); // Increment blog view count
       } catch (err) {
         console.error(err);
       } finally {
