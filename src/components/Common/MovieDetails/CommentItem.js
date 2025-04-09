@@ -1,5 +1,5 @@
-// CommentItem.js
 import React from "react";
+import { Send, X, Clock } from "lucide-react";
 
 const CommentItem = ({
   comment,
@@ -25,62 +25,73 @@ const CommentItem = ({
   const isEditing = editingComment === comment._id;
 
   return (
-    <div
-      key={comment._id}
-      className={`mt-4 ${
-        depth > 0 ? "ml-8 border-l-2 border-gray-200 pl-4" : ""
-      }`}
-    >
-      <div className="flex items-start">
-        <img
-          src={comment.user.avatar || "https://via.placeholder.com/40"}
-          alt={comment.user.email}
-          className="w-10 h-10 rounded-full mr-3"
-        />
+    <div key={comment._id} className="mt-3">
+      <div className="flex items-start gap-2">
+        <div className="relative">
+          <img
+            src={comment.user.avatar || "https://via.placeholder.com/40"}
+            alt={comment.user.email}
+            className="w-12 h-12 rounded-full object-cover ring-2 ring-gray-100"
+          />
+          {depth > 0 && (
+            <div className="absolute w-10 h-10 -left-12 -top-5 border-l-2 border-b-2 border-[#F1F2F5] rounded-bl-2xl" />
+          )}
+        </div>
+
         <div className="flex-1">
-          <div className="bg-gray-100 rounded-lg p-3">
-            <div className="flex items-center justify-between">
-              <span className="font-semibold text-sm">
-                {comment.user.username} {isOwner && "(Bạn)"}
+          <div className="bg-[#F0F2F5] rounded-xl p-3 inline-block min-w-[250px]">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-medium text-gray-900">
+                {comment.user.username}
               </span>
-              <span className="text-xs text-gray-500">
-                {formatDate(comment.createdAt)}
-              </span>
+              {isOwner && (
+                <span className="text-xs px-2 py-0.5 bg-red-50 text-red-600 rounded-full font-medium">
+                  Bạn
+                </span>
+              )}
             </div>
 
             {isEditing ? (
-              <div className="mt-2">
+              <div className="space-y-3 rounded-xl  inline-block min-w-[600px]">
                 <textarea
                   value={editContent}
                   onChange={(e) => setEditContent(e.target.value)}
-                  className="w-full p-2 border rounded"
-                  rows="2"
+                  className="w-full p-2 text-sm border border-gray-100 rounded-xl outline-none transition-colors resize-none rounded-xl p-3 inline-block min-w-[250px]"
+                  rows="3"
+                  placeholder="Chỉnh sửa bình luận..."
                 />
-                <div className="flex justify-end space-x-2 mt-2">
+                <div className="flex justify-end gap-2">
                   <button
                     onClick={() => setEditingComment(null)}
-                    className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800"
+                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 transition-colors gap-1"
                   >
+                    <X className="w-4 h-4" />
                     Hủy
                   </button>
                   <button
                     onClick={() => handleUpdateComment(comment._id)}
-                    className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-xl hover:bg-red-600 transition-colors gap-1"
                   >
-                    Lưu
+                    <Send className="w-4 h-4" />
+                    Lưu thay đổi
                   </button>
                 </div>
               </div>
             ) : (
-              <p className="mt-1 text-sm">{comment.content}</p>
+              <p className="text-black text-sm text-base leading-relaxed">
+                {comment.content}
+              </p>
             )}
           </div>
 
-          <div className="flex items-center mt-1 space-x-4 text-xs">
+          <div className="mt-2 flex items-center gap-3">
+            <div className="flex items-center gap-1 text-gray-400">
+              <time className="text-xs">{formatDate(comment.createdAt)}</time>
+            </div>
             {user && (
               <button
                 onClick={() => handleReply(comment._id)}
-                className="text-gray-500 hover:text-gray-700"
+                className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-red-500 transition-colors gap-1 group"
               >
                 Phản hồi
               </button>
@@ -90,13 +101,13 @@ const CommentItem = ({
               <>
                 <button
                   onClick={() => handleEdit(comment)}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-red-500 transition-colors gap-1 group"
                 >
                   Chỉnh sửa
                 </button>
                 <button
                   onClick={() => handleDeleteComment(comment._id)}
-                  className="text-gray-500 hover:text-red-500"
+                  className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-red-500 transition-colors gap-1 group"
                 >
                   Xóa
                 </button>
@@ -105,29 +116,31 @@ const CommentItem = ({
           </div>
 
           {replyingTo === comment._id && (
-            <div className="mt-3">
-              <form onSubmit={handleSubmitComment}>
+            <div className="mt-3 bg-[#F1F2F5] rounded-2xl p-4">
+              <form onSubmit={handleSubmitComment} className="space-y-3">
                 <textarea
                   ref={commentInputRef}
                   value={replyContent}
                   onChange={(e) => setReplyContent(e.target.value)}
-                  placeholder="Viết phản hồi..."
-                  className="w-full p-2 border rounded"
-                  rows="2"
+                  placeholder="Viết phản hồi của bạn..."
+                  className="w-full p-3 text-sm border border-gray-100 rounded-xl outline-none transition-colors resize-none"
+                  rows="3"
                 />
-                <div className="flex justify-end space-x-2 mt-2">
+                <div className="flex justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setReplyingTo(null)}
-                    className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800"
+                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 transition-colors gap-1"
                   >
+                    <X className="w-4 h-4" />
                     Hủy
                   </button>
                   <button
                     type="submit"
-                    className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-xl hover:bg-red-600 transition-colors gap-1"
                   >
-                    Gửi
+                    <Send className="w-4 h-4" />
+                    Gửi phản hồi
                   </button>
                 </div>
               </form>
@@ -137,7 +150,7 @@ const CommentItem = ({
       </div>
 
       {comment.replies && comment.replies.length > 0 && (
-        <div className="mt-2">
+        <div className="mt-3 ml-14">
           {comment.replies.map((reply) => (
             <CommentItem
               key={reply._id}
@@ -158,6 +171,7 @@ const CommentItem = ({
               commentInputRef={commentInputRef}
               formatDate={formatDate}
               handleEdit={handleEdit}
+              setReplyingTo={setReplyingTo}
             />
           ))}
         </div>

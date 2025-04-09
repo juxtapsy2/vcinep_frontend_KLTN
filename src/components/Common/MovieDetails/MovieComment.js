@@ -178,7 +178,7 @@ const MovieComments = ({ movieId }) => {
         Bình luận
       </h1>
       {user ? (
-        <form onSubmit={handleSubmitComment} className="mb-6">
+        <form onSubmit={handleSubmitComment} className="mb-3">
           <div className="flex items-start">
             <img
               src={user.avatar || "https://via.placeholder.com/40"}
