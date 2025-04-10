@@ -162,7 +162,7 @@ function MovieItem({ movie }) {
       </div>
 
       {showTrailer && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[9999] p-4">
           <div
             ref={modalRef}
             className="w-full max-w-4xl h-[80vh] max-h-[600px]"
