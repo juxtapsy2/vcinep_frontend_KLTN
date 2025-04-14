@@ -1,8 +1,10 @@
 export const menuItems = [
   { name: "Trang chủ", path: "/" },
   { name: "Phim", path: "/movie" },
+  { name: "Lịch chiếu", path: "/calendar" },
   { name: "Điện ảnh", path: "/blog" },
   { name: "Hệ thống rạp", path: "/cinema" },
+
   // { name: "Sự kiện", path: "/event" },
   // { name: "Liên hệ", path: "/contact" },
 ];
@@ -42,5 +44,5 @@ export const userRoles = {
   MANAGER: "Manager",
   EMPLOYEE: "Employee",
   USER: "User",
-  GUEST: ""
+  GUEST: "",
 };

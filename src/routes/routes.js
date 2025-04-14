@@ -46,6 +46,7 @@ import ManageEmployee from "../pages/manager/ManageEmployee";
 import DetailCheckInEmployee from "../pages/employee/DetailCheckInEmployee";
 import ManagePricing from "../pages/admin/TicketPricing";
 import ManageEmployeeAdmin from "../pages/admin/ManageEmployee";
+import Calendar from "../pages/Calendar";
 export const publicRoutes = [
   {
     path: "/",
@@ -57,6 +58,12 @@ export const publicRoutes = [
     component: Login,
     roles: [], // Guest route
     authRoute: true,
+  },
+  {
+    path: "/calendar",
+    component: Calendar,
+    roles: [], // Guest route
+    authRoute: false, // Route chỉ cho người chưa đăng nhập
   },
   {
     path: "/register",
