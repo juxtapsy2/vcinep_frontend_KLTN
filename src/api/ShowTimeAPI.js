@@ -1,4 +1,17 @@
 import api from "../config/api.js";
+//Add By The Vi 14/4/2025
+
+export const getFullShowtimesByDate = async (date) => {
+  try {
+    const res = await api.post("/showtime/getFullShowtimesByDate", {
+      date: date,
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy suất chiếu theo ngày:", error);
+    throw error;
+  }
+};
 
 export const getShowtimeByMovie = async (movieData) => {
   try {
