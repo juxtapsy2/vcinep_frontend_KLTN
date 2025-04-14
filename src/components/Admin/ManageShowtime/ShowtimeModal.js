@@ -76,18 +76,6 @@ const ShowtimeModal = ({
                 ))}
               </div>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Giá vé
-              </label>
-              <input
-                type="text"
-                value={`${newShowtime.price.toLocaleString()}đ`}
-                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg"
-                disabled
-              />
-            </div>
           </div>
 
           <div className="flex justify-end gap-3 mt-8">

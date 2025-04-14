@@ -93,6 +93,7 @@ const Booking = () => {
 
   // Hàm handleSeatClick sửa lại như sau
   const handleSeatClick = (seat) => {
+    // alert("Bạn đã chọn ghế " + seat.name);
     if (!seat || seat.status === "reserved") return;
 
     const isCurrentlySelected = bookingData.selectedSeats.find(

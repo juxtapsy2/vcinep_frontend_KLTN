@@ -121,18 +121,6 @@ const SingleTheaterModal = ({
             </div>
           </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Giá vé
-            </label>
-            <input
-              type="text"
-              value={`${singleTheaterShowtime.price.toLocaleString()}đ`}
-              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg"
-              disabled
-            />
-          </div>
-
           <div className="flex justify-end gap-3">
             <button
               type="button"

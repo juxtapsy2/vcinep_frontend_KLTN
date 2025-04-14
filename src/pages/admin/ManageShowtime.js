@@ -34,10 +34,17 @@ function ManageShowtime() {
     showDate: "",
     showTime: [],
     status: "active",
-    price: 20000,
   });
   // Available showtimes
-  const availableShowtimes = ["12:20", "13:20", "14:20", "15:20", "16:20"];
+  const availableShowtimes = [
+    "10:00",
+    "12:30",
+    "15:00",
+    "17:30",
+    "20:00",
+    "22:30",
+  ];
+
   useEffect(() => {
     fetchMovies();
     fetchCinemas();
@@ -101,7 +108,6 @@ function ManageShowtime() {
       showDate: "",
       showTime: [],
       status: "active",
-      price: 20000,
     });
   };
   const handleShowtimeChange = (e) => {
@@ -212,7 +218,6 @@ function ManageShowtime() {
     showDate: "",
     showTime: [],
     status: "active",
-    price: 20000,
   });
   useEffect(() => {
     const fetchAllCinemas = async () => {
@@ -249,7 +254,6 @@ function ManageShowtime() {
       showDate: "",
       showTime: [],
       status: "active",
-      price: 20000,
     });
     setTheaters([]);
   };
