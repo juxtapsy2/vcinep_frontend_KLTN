@@ -7,17 +7,17 @@ function ItemMovieCalendar({ item, onClick }) {
   const navigate = useNavigate();
 
   const handleBooking = (showtimeId, event) => {
-    // Ngăn chặn sự kiện click mặc định
-    event.preventDefault();
+    // Ngăn chặn sự kiện click lan truyền
+    event.stopPropagation();
     // Mở tab mới với URL booking
     window.open(`/booking/${showtimeId}`, "_blank");
   };
+
   const handleMovie = (idMovie, event) => {
-    // Ngăn chặn sự kiện click mặc định
-    event.preventDefault();
-    // Mở tab mới với URL booking
+    // Mở tab mới với URL movie
     window.open(`/movie/${idMovie}`, "_blank");
   };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
