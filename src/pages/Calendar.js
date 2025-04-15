@@ -74,16 +74,38 @@ function Calendar() {
 
       try {
         const API_KEY = "bd5e378503939ddaee76f12ad7a97608";
+
+        // Gọi API forecast 7 ngày thay vì 5 ngày
         const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/forecast?lat=${location.lat}&lon=${location.lon}&appid=${API_KEY}&units=metric&lang=vi`
+          `https://api.openweathermap.org/data/2.5/forecast?lat=${location.lat}&lon=${location.lon}&appid=${API_KEY}&units=metric&lang=vi&cnt=56` // Tăng cnt lên 56 để lấy đủ dữ liệu cho 7 ngày
         );
         const data = await response.json();
 
         const processedData = {};
+        const today = new Date();
+
+        // Tạo object lưu trữ thời tiết cho 7 ngày
+        for (let i = 0; i < 7; i++) {
+          const date = new Date(today);
+          date.setDate(today.getDate() + i);
+          const dateString = date.toDateString();
+          processedData[dateString] = {
+            temp: null,
+            weather: null,
+            description: "",
+            humidity: null,
+            windSpeed: null,
+          };
+        }
+
+        // Xử lý dữ liệu từ API
         data.list.forEach((item) => {
-          const date = new Date(item.dt * 1000).toDateString();
-          if (!processedData[date]) {
-            processedData[date] = {
+          const itemDate = new Date(item.dt * 1000);
+          const dateString = itemDate.toDateString();
+
+          // Chỉ xử lý dữ liệu trong khoảng 7 ngày
+          if (processedData[dateString] && !processedData[dateString].temp) {
+            processedData[dateString] = {
               temp: Math.round(item.main.temp),
               weather: item.weather[0].id,
               description: item.weather[0].description,
@@ -92,6 +114,15 @@ function Calendar() {
             };
           }
         });
+
+        // Đối với những ngày không có dữ liệu từ API, sử dụng dữ liệu của ngày gần nhất
+        const dates = Object.keys(processedData);
+        for (let i = 0; i < dates.length; i++) {
+          if (!processedData[dates[i]].temp && i > 0) {
+            processedData[dates[i]] = { ...processedData[dates[i - 1]] };
+          }
+        }
+
         setWeatherData(processedData);
       } catch (error) {
         console.error("Error fetching weather data:", error);
@@ -135,7 +166,7 @@ function Calendar() {
         <h3 className="font-bold text-xl">Phim đang chiếu</h3>
       </div>
       <div className="bg-white px-4 rounded-lg">
-        <div className="flex justify-center gap-4 overflow-x-auto pb-4 p-2 min-w-full">
+        <div className="flex justify-center gap-3 overflow-x-auto pb-4 p-2 min-w-full">
           {getDaysInWeek().map((date, index) => {
             const weatherInfo = weatherData?.[date.toDateString()];
             const today = isToday(date);
@@ -156,15 +187,14 @@ function Calendar() {
       </div>
 
       {/* Hiển thị danh sách phim */}
-      {/* Hiển thị danh sách phim */}
-      <div className="mt-4 p-4">
+      <div className="mt-2 p-4">
         {loadingMovies ? (
-          <div className="text-center py-8">
+          <div className="text-center py-4">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#EB514F]"></div>
             <p className="mt-2 text-gray-600">Đang tải danh sách phim...</p>
           </div>
         ) : movies.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {movies.map((item) => (
               <ItemMovieCalendar item={item} key={item._id} /> // Sử dụng component ItemMovieCalendar để hiển thị thông tin phim
             ))}
