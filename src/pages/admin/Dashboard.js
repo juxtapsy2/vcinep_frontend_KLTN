@@ -75,29 +75,27 @@ function Dashboard() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedStartDate, setSelectedStartDate] = useState("");
-  const [selectedEndDate, setSelectedEndDate] = useState("");
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
   
   const handleClear = () => {
-    setSelectedStartDate("");
-    setSelectedEndDate("");
+    setSelectedStartDate(null);
+    setSelectedEndDate(null);
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let fetchedTickets = [];
-
         const [userResponse, movieResponse] = await Promise.all([
           getStatisticalUser(),
           getStatisticalMovie(),
         ]);
-  
         setUsers(userResponse?.data || []);
         setMovies(movieResponse?.data || []);
   
+        let fetchedTickets = [];
         // fetch tickets trong khoảng filter
         if (selectedStartDate && selectedEndDate) {
           const revenueResponse = await getTicketsBetweenDates(
@@ -135,44 +133,42 @@ function Dashboard() {
   };
 
   // Xử lý dữ liệu cho biểu đồ thống kê doanh thu + lượt đăng ký
-  const dailyData = tickets?.reduce((acc, ticket) => {
-    if (!ticket) return acc;
-    const ticketDate = new Date(ticket.createdAt).toLocaleDateString();
+  const dailyData = 
+    tickets?.reduce((acc, ticket) => {
+      if (!ticket) return acc;
+      const ticketDate = new Date(ticket.createdAt).toLocaleDateString();
 
-    // Check if the ticket's date is within the selected date range
-    if (
-      (!selectedStartDate || ticketDate >= selectedStartDate) &&
-      (!selectedEndDate || ticketDate <= selectedEndDate)
-    ) {
-      // Add ticket revenue to the daily data
-      acc[ticketDate] = {
-        revenue: (acc[ticketDate]?.revenue || 0) + (ticket.totalPrice || 0),
-        registrations: acc[ticketDate]?.registrations || 0,
-      };
-    }
-
-    return acc;
-  }, {}) || {};
-
-  // Add user registrations to the daily data within the selected date range
-  users?.forEach((user) => {
-    if (!user?.registrationDate) return;
-    const userDate = new Date(user.registrationDate).toLocaleDateString();
-
-    // Check if the user's registration date is within the selected date range
-    if (
-      (!selectedStartDate || userDate >= selectedStartDate) &&
-      (!selectedEndDate || userDate <= selectedEndDate)
-    ) {
-      if (dailyData[userDate]) {
-        dailyData[userDate].registrations++;
-      } else {
-        dailyData[userDate] = { revenue: 0, registrations: 1 };
+      // Check if the ticket's date is within the selected date range
+      if (
+        (!selectedStartDate || ticketDate >= selectedStartDate) &&
+        (!selectedEndDate || ticketDate <= selectedEndDate)
+      ) {
+        // Add ticket revenue to the daily data
+        acc[ticketDate] = {
+          revenue: (acc[ticketDate]?.revenue || 0) + (ticket.totalPrice || 0),
+          registrations: acc[ticketDate]?.registrations || 0,
+        };
       }
-    }
-  });
 
-  // Map the dailyData to the format needed for the chart
+      return acc;
+    }, {}) || {};
+
+    users?.forEach((user) => {
+      if (!user?.registrationDate) return;
+      const userDate = new Date(user.registrationDate).toLocaleDateString();
+
+      if (
+        (!selectedStartDate || userDate >= selectedStartDate) &&
+        (!selectedEndDate || userDate <= selectedEndDate)
+      ) {
+        if (dailyData[userDate]) {
+          dailyData[userDate].registrations++;
+        } else {
+          dailyData[userDate] = { revenue: 0, registrations: 1 };
+        }
+      }
+    });
+
   const chartData = Object.entries(dailyData).map(([date, data]) => ({
     date,
     revenue: data.revenue || 0,

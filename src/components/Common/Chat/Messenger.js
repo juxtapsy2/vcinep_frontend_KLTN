@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import { useAuth } from "../../../contexts/AuthContext";
-import { userRoles } from "../../constants/constants";
+import { userRoles } from "../../../constants/constants";
 
 const socket = io('http://localhost:8800');
 

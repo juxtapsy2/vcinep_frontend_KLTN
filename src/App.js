@@ -19,7 +19,7 @@ import EmployeeLayout from "./components/Employee/EmployeeLayout.js";
 import RedirectIfAuthenticated from "./utils/RedirectIfAuthenticated.js";
 function App() {
   return (
-    <div className="App">
+    <div className="App font-inter">
       <Router>
         <AuthProvider>
           <BookingProvider>

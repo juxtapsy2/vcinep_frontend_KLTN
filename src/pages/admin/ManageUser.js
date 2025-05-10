@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getAllUsers, deleteUser, reactivateUser } from "../../api/UserAPI"; // Thêm reactivateUser
+import { getAllUsers, deleteUser, reactivateUser, createUser, updateUserRole } from "../../api/UserAPI"; // Thêm reactivateUser
 import {
   FaSearch,
   FaEdit,
@@ -13,6 +13,8 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
+import { User } from "lucide-react";
+import CreateUserModal from "../../components/Admin/CreateUser/CreateUserModal";
 function ManageUser() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
@@ -25,6 +27,18 @@ function ManageUser() {
     totalPages: 1,
     totalUsers: 0,
   });
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newUserData, setNewUserData] = useState({
+    username: "",
+    gender: "Male",
+    dateOfBirth: "",
+    phoneNumber: "",
+    email: "",
+    password: "",
+    role: "User",
+    cinemaId: "",
+  });
+  const defaultAvatarUrl = "/resources/defaultAvatar.png";
   const handleUserClick = (user) => {
     setSelectedUser(user);
     setShowModal(true);
@@ -109,6 +123,39 @@ function ManageUser() {
       toast.error("Lỗi khi thay đổi trạng thái người dùng");
     }
   };
+  
+  const openCreateUserModal = () => {
+    setShowCreateModal(true);
+  };
+
+  const handleSubmitCreateUser = async () => {
+    try {
+      const response = await createUser(newUserData);
+      if (response.success) {
+        toast.success("Người dùng mới đã được tạo!");
+        setShowCreateModal(false);
+        setNewUserData({
+          username: "",
+          gender: "Male",
+          dateOfBirth: "",
+          phoneNumber: "",
+          email: "",
+          password: "",
+          role: "User",
+          cinemaId: "",
+        });
+        fetchUsers(); // refresh
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      toast.error("Lỗi khi tạo người dùng");
+    }
+  };
+  
+  const handleUpdateUserRole = async(user) => {
+
+  }
 
   return (
     <div className="min-h-screen">
@@ -177,7 +224,16 @@ function ManageUser() {
           )}
         </div>
       </div>
-
+      {/* Button create new user */}
+      <div className="flex flex-row justify-between my-4">
+        <div />
+        <button 
+        onClick={openCreateUserModal}
+        className="flex flex-row py-2 px-4 bg-green-600 text-white rounded-lg">
+          <User className="w-5 h-5 mr-2" />
+          Thêm người dùng
+      </button>
+      </div>
       {/* Main Content */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
@@ -207,9 +263,9 @@ function ManageUser() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
                       <img
-                        src={user.avatar || "/default-avatar.png"}
+                        src={user.avatar || defaultAvatarUrl}
                         alt={user.username}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
+                        className="w-12 h-12 rounded-full object-cover border-none shadow-md"
                       />
                       <div>
                         <div className="font-medium text-gray-800">
@@ -225,15 +281,16 @@ function ManageUser() {
                     {user.email}
                   </td>
                   <td className="px-6 py-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        user.role === "admin"
-                          ? "bg-purple-100 text-purple-700"
-                          : "bg-blue-100 text-blue-700"
-                      }`}
+                    <select
+                      value={user.role}
+                      onChange={handleUpdateUserRole(user)}
+                      className="bg-blue-50 text-blue-800 px-2 py-1 rounded-full text-sm"
                     >
-                      {user.role}
-                    </span>
+                      <option value="User">User</option>
+                      <option value="Employee">Employee</option>
+                      <option value="Manager">Manager</option>
+                      <option value="Administrator">Admin</option>
+                    </select>
                   </td>
                   <td className="px-6 py-4">
                     <span
@@ -277,6 +334,19 @@ function ManageUser() {
             </tbody>
           </table>
         </div>
+        {showCreateModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <CreateUserModal
+              isOpen={showCreateModal}
+              onClose={() => setShowCreateModal(false)}
+              onSubmit={handleSubmitCreateUser}
+              userData={newUserData}
+              setUserData={setNewUserData}
+            />
+          </div>
+          )
+        }
+
         {showModal && selectedUser && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div
@@ -299,7 +369,7 @@ function ManageUser() {
                 <div className="flex flex-col space-y-2">
                   <div className="flex items-center gap-4 mb-4">
                     <img
-                      src={selectedUser.avatar || "/default-avatar.png"}
+                      src={selectedUser.avatar || defaultAvatarUrl}
                       alt={selectedUser.username}
                       className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
                     />

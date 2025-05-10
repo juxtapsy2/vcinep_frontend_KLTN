@@ -11,7 +11,7 @@ import { IoMdSettings } from "react-icons/io";
 // import { RiUserSettingsLine } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 
-import { menuItems } from "../../constants/constants.js";
+import { menuItems } from "../../../constants/constants.js";
 import React, { useState } from "react";
 import "./Header.css";
 import { renderMenuItem, renderMobileMenuItem } from "./HeaderNavItem.js";

@@ -65,7 +65,7 @@ export const deleteUser = async (userId) => {
   try {
     const token = localStorage.getItem("accessToken");
 
-    const res = await api.delete(`/user/${userId}`, {
+    const res = await api.put(`/user/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -117,3 +117,27 @@ export const updateUserInfo = async (updates) => {
     throw error; // Ném lỗi để xử lý bên ngoài (nếu cần)
   }
 };
+
+export const createUser = async (userData) => {
+  try {
+    const response = await api.post("/user/new", userData);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    return { success: false, message: "Network error" };
+  }
+}
+
+export const updateUserRole = async (id, newRole) => {
+  try {
+    const response = await api.put(`/role/${id}`, { role: newRole });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    return { success: false, message: "Network error" };
+  }
+}

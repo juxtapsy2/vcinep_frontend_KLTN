@@ -123,31 +123,27 @@ export const getTicketsBetweenDates = async (startDate, endDate) => {
       throw new Error("Token không tồn tại, vui lòng đăng nhập lại.");
     }
 
-    // Fetch all tickets from the backend
-    const response = await fetch(`/statistical/ticket`, {
+    const queryParams = new URLSearchParams();
+    if (startDate) queryParams.append("startDate", startDate);
+    if (endDate) queryParams.append("endDate", endDate);
+
+    const response = await fetch(`/statistical/ticket/between-dates?${queryParams.toString()}`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,  // Include token in the request header
+        Authorization: `Bearer ${token}`,
       },
     });
 
     const data = await response.json();
-    console.log("API Response:", data); // Log the response for debugging
+    console.log("API Response:", data);
 
     if (data.success && data.data && data.data.length) {
-      // Filter tickets based on the selected date range
-      const filteredTickets = data.data.filter((ticket) => {
-        const ticketDate = new Date(ticket.createdAt).toISOString().split('T')[0]; // Format as 'YYYY-MM-DD'
-        return ticketDate >= startDate && ticketDate <= endDate;
-      });
-
-      // Return the filtered tickets
-      return filteredTickets;
+      return data.data;
     } else {
-      return []; // No tickets found
+      return [];
     }
   } catch (error) {
     console.error("Error fetching tickets:", error);
-    return []; // Return empty array in case of error
+    return [];
   }
 };
