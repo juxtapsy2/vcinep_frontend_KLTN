@@ -33,7 +33,7 @@ const CinemaSelectDropdown = ({ selectedCinemaId, onChange }) => {
     <div className="space-y-2">
       <label
         htmlFor="cinema"
-        className="block text-lg font-semibold text-gray-700"
+        className="block text-lg font-semibold text-blue-950"
       >
         Chọn Rạp:
       </label>
@@ -41,7 +41,7 @@ const CinemaSelectDropdown = ({ selectedCinemaId, onChange }) => {
         id="cinema"
         value={selectedCinemaId || ""}
         onChange={(e) => onChange(e.target.value)}
-        className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+        className="block w-fit p-2 py-1 text-sm text-blue-950 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
       >
         <option value="" disabled>
           Chọn rạp

@@ -344,9 +344,6 @@ function ManageUser() {
 
                     {editingUser.userId === user._id && editingUser.role === "Manager" && (
                       <div className="mt-2">
-                        <label htmlFor="idCinema" className="block text-sm font-medium text-gray-700">
-                          Rạp phụ trách
-                        </label>
                         <CinemaSelectDropdown
                           selectedCinemaId={editingUser.idCinema}
                           onChange={(id) =>
