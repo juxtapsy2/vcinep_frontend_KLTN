@@ -15,13 +15,17 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { User } from "lucide-react";
 import CreateUserModal from "../../components/Admin/CreateUser/CreateUserModal";
+import CinemaSelectDropdown from "../../components/Admin/CinemaSlugsDropdown/CinemaSlugsDropdown";
+import { getCinemaById } from "../../api/CinemaAPI";
 function ManageUser() {
   const [users, setUsers] = useState([]);
+  const [editingUser, setEditingUser] = useState({ userId: "", role: "", idCinema: "" });
   const [search, setSearch] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [cinemaManaging, setCinemaManaging] = useState({});
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
@@ -36,7 +40,7 @@ function ManageUser() {
     email: "",
     password: "",
     role: "User",
-    cinemaId: "",
+    idCinema: "",
   });
   const defaultAvatarUrl = "/resources/defaultAvatar.png";
   const handleUserClick = (user) => {
@@ -142,9 +146,9 @@ function ManageUser() {
           email: "",
           password: "",
           role: "User",
-          cinemaId: "",
+          idCinema: "",
         });
-        fetchUsers(); // refresh
+        fetchUsers();
       } else {
         toast.error(response.message);
       }
@@ -153,9 +157,37 @@ function ManageUser() {
     }
   };
   
-  const handleUpdateUserRole = async(user) => {
-
-  }
+  const handleUpdateUserRole = async (id, newRole, idCinema = "") => {
+    try {
+      const response = await updateUserRole(id, newRole, idCinema);
+  
+      if (response.success) {
+        toast.success("Cập nhật vai trò thành công");
+        setEditingUser({ userId: "", role: "", idCinema: "" });
+        fetchUsers();
+      } else {
+        toast.error("Cập nhật thất bại: " + response.message);
+      }
+    } catch (error) {
+      toast.error("Lỗi khi cập nhật vai trò");
+      console.error("Lỗi khi cập nhật vai trò:", error);
+    }
+  };
+  // For Managers
+  const loadCinemaManaging = async (cinemaId) => {
+    if (!cinemaId || cinemaManaging[cinemaId]) return;
+    try {
+      const response = await getCinemaById(cinemaId);
+      if (response.success) {
+        setCinemaManaging((prev) => ({
+          ...prev,
+          [cinemaId]: response.data.name,
+        }));
+      }
+    } catch (err) {
+      console.error("Failed to load cinema slug", err);
+    }
+  };  
 
   return (
     <div className="min-h-screen">
@@ -255,12 +287,14 @@ function ManageUser() {
                 <tr
                   key={user._id}
                   className="border-b hover:bg-gray-50 transition-colors"
-                  onClick={() => handleUserClick(user)}
                 >
                   <td className="px-6 py-4 text-center text-gray-500">
                     {(pagination.currentPage - 1) * ITEMS_PER_PAGE + index + 1}
                   </td>
-                  <td className="px-6 py-4">
+                  <td 
+                    className="px-6 py-4 cursor-pointer"
+                    onClick={() => handleUserClick(user)}
+                  >
                     <div className="flex items-center gap-4">
                       <img
                         src={user.avatar || defaultAvatarUrl}
@@ -277,22 +311,64 @@ function ManageUser() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 hidden md:table-cell text-gray-600">
+                  <td 
+                    className="px-6 py-4 hidden md:table-cell text-gray-600 cursor-pointer"
+                    onClick={() => handleUserClick(user)}
+                  >
                     {user.email}
                   </td>
                   <td className="px-6 py-4">
                     <select
-                      value={user.role}
-                      onChange={handleUpdateUserRole(user)}
-                      className="bg-blue-50 text-blue-800 px-2 py-1 rounded-full text-sm"
+                      value={editingUser.userId === user._id ? editingUser.role : user.role}
+                      onChange={(e) => {
+                        const newRole = e.target.value;
+                        setEditingUser({
+                          userId: user._id,
+                          role: newRole,
+                          idCinema: newRole === "Manager" ? user.idCinema || "" : "",
+                        });
+                      }}
+                      className="bg-blue-50 text-blue-800 px-2 py-1 rounded-full text-sm text-center"
                     >
-                      <option value="User">User</option>
-                      <option value="Employee">Employee</option>
-                      <option value="Manager">Manager</option>
-                      <option value="Administrator">Admin</option>
+                      <option value="User">Người dùng</option>
+                      <option value="Employee">Nhân viên</option>
+                      <option value="Manager">Quản lý rạp</option>
+                      <option value="Admin">Quản trị viên</option>
                     </select>
+                    {user.role === "Manager" && user.idCinema && (
+                      <div className="text-xs text-blue-800 mt-2 bg-none font-semibold text-center">
+                        {cinemaManaging[user.idCinema] || "Đang tải..."}
+                        {loadCinemaManaging(user.idCinema).data?.name}
+                      </div>
+                    )}
+
+                    {editingUser.userId === user._id && editingUser.role === "Manager" && (
+                      <div className="mt-2">
+                        <label htmlFor="idCinema" className="block text-sm font-medium text-gray-700">
+                          Rạp phụ trách
+                        </label>
+                        <CinemaSelectDropdown
+                          selectedCinemaId={editingUser.idCinema}
+                          onChange={(id) =>
+                            setEditingUser((prev) => ({ ...prev, idCinema: id }))
+                          }
+                        />
+                      </div>
+                    )}
+
+                    {/* Show Save button only when role is being edited */}
+                    {editingUser.userId === user._id && (
+                      <button
+                        onClick={() =>
+                          handleUpdateUserRole(user._id, editingUser.role, editingUser.idCinema)
+                        }
+                        className="mt-2 ml-2 text-xs text-white bg-blue-800 hover:bg-blue-600 px-3 py-1 rounded"
+                      >
+                        Lưu
+                      </button>
+                    )}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4" >
                     <span
                       className={`px-3 py-1 rounded-full text-sm ${
                         user.status === "active"

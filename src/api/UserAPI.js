@@ -65,7 +65,7 @@ export const deleteUser = async (userId) => {
   try {
     const token = localStorage.getItem("accessToken");
 
-    const res = await api.put(`/user/${userId}`, {
+    const res = await api.delete(`/user/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -130,9 +130,14 @@ export const createUser = async (userData) => {
   }
 }
 
-export const updateUserRole = async (id, newRole) => {
+export const updateUserRole = async (id, newRole, idCinema) => {
   try {
-    const response = await api.put(`/role/${id}`, { role: newRole });
+    const token = localStorage.getItem("accessToken");
+    const response = await api.put(`/user/role/${id}`, { role: newRole, idCinema: idCinema }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     if (error.response) {

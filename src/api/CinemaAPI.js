@@ -168,3 +168,13 @@ export const deleteCinemaById = async (id) => {
     throw error;
   }
 };
+
+export const getCinemaSlugs = async () => {
+  try {
+    const response = await api.get("/cinema/slugs"); 
+    return response.data.data.cinemas;
+  } catch (error) {
+    console.error("Error fetching cinema slugs:", error);
+    throw error;
+  }
+};
