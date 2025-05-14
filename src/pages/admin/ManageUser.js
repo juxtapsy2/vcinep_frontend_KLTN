@@ -15,8 +15,11 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { User } from "lucide-react";
 import CreateUserModal from "../../components/Admin/CreateUser/CreateUserModal";
-import CinemaSelectDropdown from "../../components/Admin/CinemaSlugsDropdown/CinemaSlugsDropdown";
+import CinemaSelectDropdown from "../../components/Admin/CinemaSelectDropdown/CinemaSelectDropdown";
+import RoleSelectDropdown from "../../components/Admin/RoleSelectDropdown/RoleSelectDropdown";
 import { getCinemaById } from "../../api/CinemaAPI";
+import InfoModal from "../../components/Admin/InfoModal/InfoModal";
+
 function ManageUser() {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState({ userId: "", role: "", idCinema: "" });
@@ -25,7 +28,6 @@ function ManageUser() {
   const [showModal, setShowModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
-  const [cinemaManaging, setCinemaManaging] = useState({});
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
@@ -173,21 +175,6 @@ function ManageUser() {
       console.error("Lỗi khi cập nhật vai trò:", error);
     }
   };
-  // For Managers
-  const loadCinemaManaging = async (cinemaId) => {
-    if (!cinemaId || cinemaManaging[cinemaId]) return;
-    try {
-      const response = await getCinemaById(cinemaId);
-      if (response.success) {
-        setCinemaManaging((prev) => ({
-          ...prev,
-          [cinemaId]: response.data.name,
-        }));
-      }
-    } catch (err) {
-      console.error("Failed to load cinema slug", err);
-    }
-  };  
 
   return (
     <div className="min-h-screen">
@@ -288,84 +275,68 @@ function ManageUser() {
                   key={user._id}
                   className="border-b hover:bg-gray-50 transition-colors"
                 >
-                  <td className="px-6 py-4 text-center text-gray-500">
+                  <td className="px-4 py-4 text-center text-gray-500">
                     {(pagination.currentPage - 1) * ITEMS_PER_PAGE + index + 1}
                   </td>
                   <td 
-                    className="px-6 py-4 cursor-pointer"
+                    className="px-2 py-4 cursor-pointer max-w-[150px]"
                     onClick={() => handleUserClick(user)}
                   >
                     <div className="flex items-center gap-4">
                       <img
                         src={user.avatar || defaultAvatarUrl}
                         alt={user.username}
-                        className="w-12 h-12 rounded-full object-cover border-none shadow-md"
+                        className="w-10 h-10 rounded-full object-cover border-none shadow-md"
                       />
                       <div>
-                        <div className="font-medium text-gray-800">
+                        <div className="font-medium text-gray-800 truncate">
                           {user.username}
                         </div>
-                        <div className="text-sm text-gray-500 md:hidden">
+                        <div className="text-sm text-gray-500 truncate md:hidden">
                           {user.email}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td 
-                    className="px-6 py-4 hidden md:table-cell text-gray-600 cursor-pointer"
+                    className="px-2 py-4 hidden md:table-cell text-gray-600 text-left cursor-pointer max-w-[180px] truncate"
                     onClick={() => handleUserClick(user)}
                   >
                     {user.email}
                   </td>
-                  <td className="px-6 py-4">
-                    <select
-                      value={editingUser.userId === user._id ? editingUser.role : user.role}
-                      onChange={(e) => {
-                        const newRole = e.target.value;
-                        setEditingUser({
-                          userId: user._id,
-                          role: newRole,
-                          idCinema: newRole === "Manager" ? user.idCinema || "" : "",
-                        });
-                      }}
-                      className="bg-blue-50 text-blue-800 px-2 py-1 rounded-full text-sm text-center"
-                    >
-                      <option value="User">Người dùng</option>
-                      <option value="Employee">Nhân viên</option>
-                      <option value="Manager">Quản lý rạp</option>
-                      <option value="Admin">Quản trị viên</option>
-                    </select>
-                    {user.role === "Manager" && user.idCinema && (
-                      <div className="text-xs text-blue-800 mt-2 bg-none font-semibold text-center">
-                        {cinemaManaging[user.idCinema] || "Đang tải..."}
-                        {loadCinemaManaging(user.idCinema).data?.name}
-                      </div>
-                    )}
-
-                    {editingUser.userId === user._id && editingUser.role === "Manager" && (
-                      <div className="mt-2">
+                  <td className="px-4 py-4">
+                    <div className="flex flex-row min-w-[100px] justify-start gap-4 relative z-10">
+                      <RoleSelectDropdown
+                        value={editingUser.userId === user._id ? editingUser.role : user.role}
+                        onChange={(newRole) => {
+                          setEditingUser({
+                            userId: user._id,
+                            role: newRole,
+                            idCinema: newRole === "Manager" ? user.idCinema || "" : "",
+                          });
+                        }}
+                      />
+                      {user.role === "Manager" && user.idCinema && (
                         <CinemaSelectDropdown
-                          selectedCinemaId={editingUser.idCinema}
-                          onChange={(id) =>
-                            setEditingUser((prev) => ({ ...prev, idCinema: id }))
-                          }
+                          selectedCinemaId={user?.idCinema}
+                          onChange={(newCinemaId) => handleUpdateUserRole(user?._id, "Manager", newCinemaId)}
                         />
-                      </div>
-                    )}
+                      )}
 
-                    {/* Show Save button only when role is being edited */}
-                    {editingUser.userId === user._id && (
-                      <button
-                        onClick={() =>
-                          handleUpdateUserRole(user._id, editingUser.role, editingUser.idCinema)
-                        }
-                        className="mt-2 ml-2 text-xs text-white bg-blue-800 hover:bg-blue-600 px-3 py-1 rounded"
-                      >
-                        Lưu
-                      </button>
-                    )}
+                      {/* Show Save button only when role is being edited */}
+                      {editingUser.userId === user._id && (
+                        <button
+                          onClick={() =>
+                            handleUpdateUserRole(user._id, editingUser.role, editingUser.idCinema)
+                          }
+                          className="ml-2 my-auto text-xs text-white font-semibold bg-blue-800 hover:bg-blue-600 px-3 py-1 rounded-full"
+                        >
+                          Lưu
+                        </button>
+                      )}
+                    </div>
                   </td>
-                  <td className="px-6 py-4" >
+                  <td className="px-2 py-4" >
                     <span
                       className={`px-3 py-1 rounded-full text-sm ${
                         user.status === "active"
@@ -378,7 +349,7 @@ function ManageUser() {
                         : "Không hoạt động"}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-2 py-4">
                     <div className="flex justify-center gap-2">
                       <button
                         onClick={(e) => {
@@ -421,109 +392,27 @@ function ManageUser() {
         }
 
         {showModal && selectedUser && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div
-              className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  Chi tiết người dùng
-                </h2>
-                <button
-                  onClick={handleCloseModal}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <FaTimes className="w-6 h-6" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col space-y-2">
-                  <div className="flex items-center gap-4 mb-4">
-                    <img
-                      src={selectedUser.avatar || defaultAvatarUrl}
-                      alt={selectedUser.username}
-                      className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
-                    />
-                    <div>
-                      <h3 className="text-xl font-semibold">
-                        {selectedUser.username}
-                      </h3>
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm ${
-                          selectedUser.status === "active"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-700"
-                        }`}
-                      >
-                        {selectedUser.status === "active"
-                          ? "Hoạt động"
-                          : "Không hoạt động"}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="text-gray-600">ID:</p>
-                    <p className="font-medium">{selectedUser._id}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-gray-600">Email:</p>
-                    <p className="font-medium">{selectedUser.email}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-gray-600">Số điện thoại:</p>
-                    <p className="font-medium">{selectedUser.phoneNumber}</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col space-y-2">
-                  <div>
-                    <p className="text-gray-600">Giới tính:</p>
-                    <p className="font-medium">{selectedUser.gender}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-gray-600">Ngày sinh:</p>
-                    <p className="font-medium">
-                      {formatDate(selectedUser.dateOfBirth)}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-gray-600">Vai trò:</p>
-                    <p className="font-medium">{selectedUser.role}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-gray-600">Ngày đăng ký:</p>
-                    <p className="font-medium">
-                      {formatDate(selectedUser.registrationDate)}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-gray-600">Cập nhật lần cuối:</p>
-                    <p className="font-medium">
-                      {formatDate(selectedUser.updatedAt)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 flex justify-end">
-                <button
-                  onClick={handleCloseModal}
-                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
-                >
-                  Đóng
-                </button>
-              </div>
-            </div>
-          </div>
+          <InfoModal
+            show={showModal}
+            onClose={handleCloseModal}
+            title="Chi tiết người dùng"
+            image={{
+              url: selectedUser.avatar || defaultAvatarUrl,
+              title: selectedUser.username,
+              alt: selectedUser.username,
+            }}
+            status={selectedUser.status}
+            fields={[
+              { label: "ID", value: selectedUser._id },
+              { label: "Email", value: selectedUser.email },
+              { label: "Số điện thoại", value: selectedUser.phoneNumber },
+              { label: "Giới tính", value: selectedUser.gender },
+              { label: "Ngày sinh", value: formatDate(selectedUser.dateOfBirth) },
+              { label: "Vai trò", value: selectedUser.role },
+              { label: "Ngày đăng ký", value: formatDate(selectedUser.registrationDate) },
+              { label: "Cập nhật lần cuối", value: formatDate(selectedUser.updatedAt) },
+            ]}
+          />
         )}
         {/* Pagination */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-t">

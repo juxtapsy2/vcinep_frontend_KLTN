@@ -46,3 +46,10 @@ export const userRoles = {
   USER: "User",
   GUEST: "",
 };
+
+export const rolesForRender = [
+  { value: "User", label: "Người dùng" },
+  { value: "Employee", label: "Nhân viên" },
+  { value: "Manager", label: "Quản lý rạp" },
+  { value: "Admin", label: "Quản trị viên"},
+];
