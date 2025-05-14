@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getAllUsers, deleteUser, reactivateUser, createUser, updateUserRole } from "../../api/UserAPI"; // Thêm reactivateUser
+import { getAllUsers, deleteUser, reactivateUser, createUser, updateUserRole } from "../../api/UserAPI";
 import {
   FaSearch,
   FaEdit,
@@ -17,8 +17,8 @@ import { User } from "lucide-react";
 import CreateUserModal from "../../components/Admin/CreateUser/CreateUserModal";
 import CinemaSelectDropdown from "../../components/Admin/CinemaSelectDropdown/CinemaSelectDropdown";
 import RoleSelectDropdown from "../../components/Admin/RoleSelectDropdown/RoleSelectDropdown";
-import { getCinemaById } from "../../api/CinemaAPI";
 import InfoModal from "../../components/Admin/InfoModal/InfoModal";
+import { defaultAvatarUrl } from "../../constants/constants";
 
 function ManageUser() {
   const [users, setUsers] = useState([]);
@@ -35,6 +35,7 @@ function ManageUser() {
   });
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newUserData, setNewUserData] = useState({
+    name: "",
     username: "",
     gender: "Male",
     dateOfBirth: "",
@@ -44,7 +45,7 @@ function ManageUser() {
     role: "User",
     idCinema: "",
   });
-  const defaultAvatarUrl = "/resources/defaultAvatar.png";
+  
   const handleUserClick = (user) => {
     setSelectedUser(user);
     setShowModal(true);
@@ -116,12 +117,12 @@ function ManageUser() {
     try {
       if (user.status === "active") {
         await deleteUser(user._id);
-        console.log(`Người dùng ${user.username} đã bị hủy kích hoạt.`);
-        toast.success(`Người dùng ${user.username} đã bị hủy kích hoạt.`);
+        console.log(`Người dùng ${user.name} đã bị hủy kích hoạt.`);
+        toast.success(`Người dùng ${user.name} đã bị hủy kích hoạt.`);
       } else {
         await reactivateUser(user._id);
-        console.log(`Người dùng ${user.username} đã được kích hoạt.`);
-        toast.success(`Người dùng ${user.username} đã được kích hoạt.`);
+        console.log(`Người dùng ${user.name} đã được kích hoạt.`);
+        toast.success(`Người dùng ${user.name} đã được kích hoạt.`);
       }
       fetchUsers();
     } catch (error) {
@@ -136,9 +137,13 @@ function ManageUser() {
 
   const handleSubmitCreateUser = async () => {
     try {
+      if (newUserData.role === "Manager" && !newUserData.idCinema) {
+        toast.error("Vui lòng chọn rạp cho người quản lý.");
+        return;
+      }
       const response = await createUser(newUserData);
       if (response.success) {
-        toast.success("Người dùng mới đã được tạo!");
+        toast.success("Người dùng đã được tạo!");
         setShowCreateModal(false);
         setNewUserData({
           username: "",
@@ -290,7 +295,7 @@ function ManageUser() {
                       />
                       <div>
                         <div className="font-medium text-gray-800 truncate">
-                          {user.username}
+                          {user.name}
                         </div>
                         <div className="text-sm text-gray-500 truncate md:hidden">
                           {user.email}
@@ -316,7 +321,7 @@ function ManageUser() {
                           });
                         }}
                       />
-                      {user.role === "Manager" && user.idCinema && (
+                      {user.role === "Manager" && (
                         <CinemaSelectDropdown
                           selectedCinemaId={user?.idCinema}
                           onChange={(newCinemaId) => handleUpdateUserRole(user?._id, "Manager", newCinemaId)}
@@ -398,7 +403,7 @@ function ManageUser() {
             title="Chi tiết người dùng"
             image={{
               url: selectedUser.avatar || defaultAvatarUrl,
-              title: selectedUser.username,
+              title: selectedUser.name,
               alt: selectedUser.username,
             }}
             status={selectedUser.status}

@@ -119,8 +119,15 @@ export const updateUserInfo = async (updates) => {
 };
 
 export const createUser = async (userData) => {
+  const token = localStorage.getItem("accessToken");
   try {
-    const response = await api.post("/user/new", userData);
+    const response = await api.post("/user/new", userData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     if (error.response) {

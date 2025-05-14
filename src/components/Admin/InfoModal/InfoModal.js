@@ -43,6 +43,7 @@ const InfoModal = ({
                   />
                   <div>
                     <h3 className="text-xl font-semibold">{image.title}</h3>
+                    <h3 className="text-sm font-normal text-gray-500 mt-[1px]">{image.alt}</h3>
                   </div>
                 </div>
               )}

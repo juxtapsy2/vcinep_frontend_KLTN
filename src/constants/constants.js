@@ -53,3 +53,5 @@ export const rolesForRender = [
   { value: "Manager", label: "Quản lý rạp" },
   { value: "Admin", label: "Quản trị viên"},
 ];
+
+export const defaultAvatarUrl = "/resources/defaultAvatar.png";

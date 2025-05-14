@@ -1,96 +1,108 @@
 import React from "react";
+import CinemaSelectDropdown from "../CinemaSelectDropdown/CinemaSelectDropdown";
+import RoleSelectDropdown from "../RoleSelectDropdown/RoleSelectDropdown";
 
-const CreateUserModal = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  userData,
-  setUserData,
-}) => {
+const CreateUserModal = ({ isOpen, onClose, userData, setUserData, onSubmit }) => {
   if (!isOpen) return null;
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserData({ ...userData, [name]: value });
+  };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-xl">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+      <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-lg">
         <h2 className="text-xl font-bold mb-4">Tạo người dùng mới</h2>
-        <div className="grid grid-cols-1 gap-3">
+
+        <div className="space-y-4">
           <input
-            className="border p-2 rounded"
+            type="text"
+            name="name"
             placeholder="Tên người dùng"
-            value={userData.username}
-            onChange={(e) =>
-              setUserData({ ...userData, username: e.target.value })
-            }
+            value={userData.name}
+            onChange={handleChange}
+            className="w-full border rounded p-2"
           />
+
           <input
-            className="border p-2 rounded"
+            type="email"
+            name="email"
             placeholder="Email"
             value={userData.email}
-            onChange={(e) =>
-              setUserData({ ...userData, email: e.target.value })
-            }
+            onChange={handleChange}
+            className="w-full border rounded p-2"
           />
+
           <input
-            className="border p-2 rounded"
-            placeholder="Mật khẩu"
+            type="text"
+            name="username"
+            placeholder="Tên đăng nhập"
+            value={userData.username}
+            onChange={handleChange}
+            className="w-full border rounded p-2"
+          />
+
+          <input
             type="password"
+            name="password"
+            placeholder="Mật khẩu"
             value={userData.password}
-            onChange={(e) =>
-              setUserData({ ...userData, password: e.target.value })
-            }
+            onChange={handleChange}
+            className="w-full border rounded p-2"
           />
+
           <input
-            className="border p-2 rounded"
+            type="text"
+            name="phoneNumber"
             placeholder="Số điện thoại"
-            value={userData.phoneNumber}
-            onChange={(e) =>
-              setUserData({ ...userData, phoneNumber: e.target.value })
-            }
+            value={userData.phoneNumber || ""}
+            onChange={handleChange}
+            className="w-full border rounded p-2"
           />
+
           <input
-            className="border p-2 rounded"
             type="date"
-            value={userData.dateOfBirth}
-            onChange={(e) =>
-              setUserData({ ...userData, dateOfBirth: e.target.value })
-            }
+            name="dateOfBirth"
+            value={userData.dateOfBirth || ""}
+            onChange={handleChange}
+            className="w-full border rounded p-2"
           />
-          <select
-            className="border p-2 rounded"
-            value={userData.gender}
-            onChange={(e) =>
-              setUserData({ ...userData, gender: e.target.value })
-            }
-          >
-            <option value="Male">Nam</option>
-            <option value="Female">Nữ</option>
-          </select>
-          <select
-            className="border p-2 rounded"
-            value={userData.role}
-            onChange={(e) =>
-              setUserData({ ...userData, role: e.target.value })
-            }
-          >
-            <option value="User">User</option>
-            <option value="Manager">Manager</option>
-            <option value="Admin">Admin</option>
-          </select>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Vai trò
+            </label>
+            <RoleSelectDropdown
+              value={userData.role || ""}
+              onChange={(value) => {
+                setUserData((prev) => ({
+                  ...prev,
+                  role: value,
+                  idCinema: value === "Manager" ? prev.idCinema : undefined,
+                }));
+              }}
+            />
+          </div>
+
+          {userData.role === "Manager" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Rạp quản lý
+              </label>
+              <CinemaSelectDropdown
+                selectedCinemaId={userData.idCinema || ""}
+                onChange={(value) =>
+                  setUserData((prev) => ({ ...prev, idCinema: value }))
+                }
+              />
+            </div>
+          )}
         </div>
 
-        <div className="mt-4 flex justify-end gap-2">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-          >
-            Hủy
-          </button>
-          <button
-            onClick={onSubmit}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          >
-            Tạo
-          </button>
+        <div className="mt-6 flex justify-end space-x-3">
+          <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded">Huỷ</button>
+          <button onClick={onSubmit} className="px-4 py-2 bg-green-600 text-white rounded">Tạo</button>
         </div>
       </div>
     </div>
