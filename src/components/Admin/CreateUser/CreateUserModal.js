@@ -20,7 +20,7 @@ const CreateUserModal = ({ isOpen, onClose, userData, setUserData, onSubmit }) =
             type="text"
             name="name"
             placeholder="Tên người dùng"
-            value={userData.name}
+            value={userData.username}
             onChange={handleChange}
             className="w-full border rounded p-2"
           />
@@ -30,15 +30,6 @@ const CreateUserModal = ({ isOpen, onClose, userData, setUserData, onSubmit }) =
             name="email"
             placeholder="Email"
             value={userData.email}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-          />
-
-          <input
-            type="text"
-            name="username"
-            placeholder="Tên đăng nhập"
-            value={userData.username}
             onChange={handleChange}
             className="w-full border rounded p-2"
           />

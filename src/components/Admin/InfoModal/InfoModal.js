@@ -38,12 +38,11 @@ const InfoModal = ({
                 <div className="flex items-center gap-4">
                   <img
                     src={image.url}
-                    alt={image.alt || "thumbnail"}
+                    alt={image.title || "thumbnail"}
                     className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
                   />
                   <div>
                     <h3 className="text-xl font-semibold">{image.title}</h3>
-                    <h3 className="text-sm font-normal text-gray-500 mt-[1px]">{image.alt}</h3>
                   </div>
                 </div>
               )}

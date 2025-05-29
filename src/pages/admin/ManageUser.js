@@ -35,7 +35,6 @@ function ManageUser() {
   });
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newUserData, setNewUserData] = useState({
-    name: "",
     username: "",
     gender: "Male",
     dateOfBirth: "",
@@ -117,12 +116,12 @@ function ManageUser() {
     try {
       if (user.status === "active") {
         await deleteUser(user._id);
-        console.log(`Người dùng ${user.name} đã bị hủy kích hoạt.`);
-        toast.success(`Người dùng ${user.name} đã bị hủy kích hoạt.`);
+        console.log(`Người dùng ${user.username} đã bị hủy kích hoạt.`);
+        toast.success(`Người dùng ${user.username} đã bị hủy kích hoạt.`);
       } else {
         await reactivateUser(user._id);
-        console.log(`Người dùng ${user.name} đã được kích hoạt.`);
-        toast.success(`Người dùng ${user.name} đã được kích hoạt.`);
+        console.log(`Người dùng ${user.username} đã được kích hoạt.`);
+        toast.success(`Người dùng ${user.username} đã được kích hoạt.`);
       }
       fetchUsers();
     } catch (error) {
@@ -295,7 +294,7 @@ function ManageUser() {
                       />
                       <div>
                         <div className="font-medium text-gray-800 truncate">
-                          {user.name}
+                          {user.username}
                         </div>
                         <div className="text-sm text-gray-500 truncate md:hidden">
                           {user.email}
@@ -403,8 +402,7 @@ function ManageUser() {
             title="Chi tiết người dùng"
             image={{
               url: selectedUser.avatar || defaultAvatarUrl,
-              title: selectedUser.name,
-              alt: selectedUser.username,
+              title: selectedUser.username,
             }}
             status={selectedUser.status}
             fields={[
