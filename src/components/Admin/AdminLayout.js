@@ -1,27 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUser,
-  faFilm,
-  faCalendarAlt,
-  faCogs,
-  faBars,
-  faSignOutAlt,
-  faTachometerAlt,
-  faNewspaper,
-  faUsers,
-  faClock,
-  faCoffee,
-  faTicketAlt,
-  faVideo,
-  faMoneyBillWave,
-  faUserTie,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBars, faSignOutAlt } from "@fortawesome/free-solid-svg-icons"
 import logo from "../image/LogoVCineP.png";
 import { useAuth } from "../../contexts/AuthContext.js";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import Breadcrumb from "./Breadcumb.js";
+import { adminMenuItems } from "../../constants/constants.js";
 
 function AdminLayout({ children }) {
   const { user, logout } = useAuth();
@@ -54,59 +39,6 @@ function AdminLayout({ children }) {
     return () => clearInterval(timer);
   }, []);
 
-  const menuItems = [
-    {
-      path: "/admin/dashboard",
-      icon: faTachometerAlt,
-      label: "Dashboard",
-    },
-    {
-      path: "/admin/blog",
-      icon: faNewspaper,
-      label: "Blog",
-    },
-    {
-      path: "/admin/users",
-      icon: faUsers,
-      label: "Người dùng",
-    },
-    {
-      path: "/admin/employees",
-      icon: faUserTie,
-      label: "Nhân viên",
-    },
-    {
-      path: "/admin/movies",
-      icon: faFilm,
-      label: "Phim",
-    },
-    {
-      path: "/admin/concession",
-      icon: faCoffee,
-      label: "Đồ uống",
-    },
-    {
-      path: "/admin/ticket",
-      icon: faTicketAlt,
-      label: "Vé",
-    },
-    {
-      path: "/admin/pricing",
-      icon: faMoneyBillWave,
-      label: "Giá vé",
-    },
-    {
-      path: "/admin/showtimes",
-      icon: faCalendarAlt,
-      label: "Suất chiếu",
-    },
-    {
-      path: "/admin/cinemas",
-      icon: faVideo,
-      label: "Rạp",
-    },
-  ];
-
   // Format the current time
   const formattedTime = currentTime.toLocaleString("vi-VN", {
     hour: "2-digit",
@@ -137,7 +69,7 @@ function AdminLayout({ children }) {
           </div>
 
           <nav style={{ marginTop: "11px" }}>
-            {menuItems.map((item) => (
+            {adminMenuItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}

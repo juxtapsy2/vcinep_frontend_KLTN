@@ -47,6 +47,7 @@ import DetailCheckInEmployee from "../pages/employee/DetailCheckInEmployee";
 import ManagePricing from "../pages/admin/TicketPricing";
 import ManageEmployeeAdmin from "../pages/admin/ManageEmployee";
 import Calendar from "../pages/Calendar";
+import AdminManageEmployee from "../pages/admin/ManageEmployee";
 export const publicRoutes = [
   {
     path: "/",
@@ -275,7 +276,7 @@ export const adminRoutes = [
   },
   {
     path: "/admin/employees/",
-    component: ManageEmployee,
+    component: AdminManageEmployee,
     roles: ["Admin"], // Guest route
     protected: true,
   },

@@ -53,7 +53,7 @@ function App() {
                     }
                   />
                 ))}
-                {/* Admin Routes */}
+                {/* Employee Routes */}
                 {employeeRoutes.map((route) => (
                   <Route
                     key={route.path}

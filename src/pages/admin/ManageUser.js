@@ -18,7 +18,7 @@ import CreateUserModal from "../../components/Admin/CreateUser/CreateUserModal";
 import CinemaSelectDropdown from "../../components/Admin/CinemaSelectDropdown/CinemaSelectDropdown";
 import RoleSelectDropdown from "../../components/Admin/RoleSelectDropdown/RoleSelectDropdown";
 import InfoModal from "../../components/Admin/InfoModal/InfoModal";
-import { defaultAvatarUrl } from "../../constants/constants";
+import { defaultAvatarUrl, roles, statuses } from "../../constants/constants";
 
 function ManageUser() {
   const [users, setUsers] = useState([]);
@@ -58,18 +58,6 @@ function ManageUser() {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("vi-VN");
   };
-  const roles = [
-    { value: "", label: "Tất cả vai trò" },
-    { value: "User", label: "Người dùng (User)" },
-    { value: "Manager", label: "Quản lý rạp (Manager)" },
-    { value: "Admin", label: "Quản trị viên (Admin)" },
-  ];
-
-  const statuses = [
-    { value: "", label: "Tất cả trạng thái" },
-    { value: "active", label: "Hoạt động" },
-    { value: "inactive", label: "Bị khóa" },
-  ];
 
   const [loading, setLoading] = useState(false);
   const ITEMS_PER_PAGE = 10; // Số user mỗi trang
@@ -136,7 +124,7 @@ function ManageUser() {
 
   const handleSubmitCreateUser = async () => {
     try {
-      if (newUserData.role === "Manager" && !newUserData.idCinema) {
+      if ((newUserData.role === "Manager" || newUserData.role === "Employee") && !newUserData.idCinema) {
         toast.error("Vui lòng chọn rạp cho người quản lý.");
         return;
       }
@@ -320,7 +308,7 @@ function ManageUser() {
                           });
                         }}
                       />
-                      {user.role === "Manager" && (
+                      {(user.role === "Manager" || user.role === "Employee") && (
                         <CinemaSelectDropdown
                           selectedCinemaId={user?.idCinema}
                           onChange={(newCinemaId) => handleUpdateUserRole(user?._id, "Manager", newCinemaId)}

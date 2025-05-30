@@ -1,3 +1,16 @@
+import {
+  faFilm,
+  faCalendarAlt,
+  faTachometerAlt,
+  faNewspaper,
+  faUsers,
+  faCoffee,
+  faTicketAlt,
+  faVideo,
+  faMoneyBillWave,
+  faUserTie,
+} from "@fortawesome/free-solid-svg-icons";
+
 export const menuItems = [
   { name: "Trang chủ", path: "/" },
   { name: "Phim", path: "/movie" },
@@ -55,3 +68,76 @@ export const rolesForRender = [
 ];
 
 export const defaultAvatarUrl = "/resources/defaultAvatar.png";
+
+export const adminMenuItems = [
+  {
+    path: "/admin/dashboard",
+    icon: faTachometerAlt,
+    label: "Dashboard",
+  },
+  {
+    path: "/admin/blog",
+    icon: faNewspaper,
+    label: "Blog",
+  },
+  {
+    path: "/admin/users",
+    icon: faUsers,
+    label: "Người dùng",
+  },
+  {
+    path: "/admin/employees",
+    icon: faUserTie,
+    label: "Nhân viên",
+  },
+  {
+    path: "/admin/movies",
+    icon: faFilm,
+    label: "Phim",
+  },
+  {
+    path: "/admin/concession",
+    icon: faCoffee,
+    label: "Đồ uống",
+  },
+  {
+    path: "/admin/ticket",
+    icon: faTicketAlt,
+    label: "Vé",
+  },
+  {
+    path: "/admin/pricing",
+    icon: faMoneyBillWave,
+    label: "Giá vé",
+  },
+  {
+    path: "/admin/showtimes",
+    icon: faCalendarAlt,
+    label: "Suất chiếu",
+  },
+  {
+    path: "/admin/cinemas",
+    icon: faVideo,
+    label: "Rạp",
+  },
+];
+
+export const roles = [
+  { value: "", label: "Tất cả vai trò" },
+  { value: "User", label: "Người dùng (User)" },
+  { value: "Manager", label: "Quản lý rạp (Manager)" },
+  { value: "Employee", label: "Nhân viên (Employee)" },
+  { value: "Admin", label: "Quản trị viên (Admin)" },
+];
+
+export const statuses = [
+  { value: "", label: "Tất cả trạng thái" },
+  { value: "active", label: "Hoạt động" },
+  { value: "inactive", label: "Bị khóa" },
+];
+
+export const employeeRolesForAdminFilter = [
+  { value: "", label: "Tất cả vai trò" },
+  { value: "Manager", label: "Quản lý rạp (Manager)" },
+  { value: "Employee", label: "Nhân viên (Employee)" },
+];

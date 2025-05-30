@@ -152,4 +152,27 @@ export const updateUserRole = async (id, newRole, idCinema) => {
     }
     return { success: false, message: "Network error" };
   }
-}
+};
+
+export const getEmployees = async (
+  page = 1,
+  limit = 10,
+  username = "",
+  role = [],
+  status = "") => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await api.get("/user/employees", {
+      params: { page, limit, username, role, status },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    return { success: false, message: "Network error" };
+  }
+};
