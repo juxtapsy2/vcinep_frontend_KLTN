@@ -8,6 +8,9 @@ import {
   faBars,
   faSignOutAlt,
   faClock,
+  faNewspaper,
+  faFilm,
+  faCalendarAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../image/LogoVCineP.png";
 import { useAuth } from "../../contexts/AuthContext.js";
@@ -51,10 +54,30 @@ function EmployeeLayout({ children }) {
   }, [user?.idCinema]);
 
   const menuItems = [
+    // {
+    //   path: "/employee/dashboard",
+    //   icon: faTachometerAlt,
+    //   label: "Dashboard",
+    // },
+     {
+          path: "/employee/blog",
+          icon: faNewspaper, 
+          label: "Blog",
+    },
+     {
+          path: "/employee/movies",
+          icon: faFilm, 
+          label: "Phim",
+    },
     {
-      path: "/employee/dashboard",
-      icon: faTachometerAlt,
-      label: "Dashboard",
+          path: "/employee/ticket",
+          icon: faTicketAlt, // Biểu tượng Vé
+          label: "Vé",
+    },
+    {
+          path: "/employee/showtimes",
+          icon: faCalendarAlt, // Biểu tượng Suất chiếu (biểu tượng lịch)
+          label: "Suất chiếu",
     },
     {
       path: "/employee/ticketcounter",

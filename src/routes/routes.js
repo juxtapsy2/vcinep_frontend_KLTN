@@ -48,6 +48,10 @@ import ManagePricing from "../pages/admin/TicketPricing";
 import ManageEmployeeAdmin from "../pages/admin/ManageEmployee";
 import Calendar from "../pages/Calendar";
 import AdminManageEmployee from "../pages/admin/ManageEmployee";
+import ManageBlogEmployee from "../pages/employee/ManageBlogEmployee";
+import ManagerTicketsEmployee from "../pages/employee/ManagerTicketEmployee";
+import ManagerShowtimeEmployee from "../pages/employee/ManagerShowtimeeEmployee";
+import ManagerMoviesEmployee from "../pages/employee/ManagerMoviesEmployee";
 export const publicRoutes = [
   {
     path: "/",
@@ -383,6 +387,30 @@ export const employeeRoutes = [
   {
     path: "/employee/dashboard",
     component: DashboardEmployee,
+    roles: ["Employee"],
+    protected: true,
+  },
+  {
+    path: "/employee/blog",
+    component: ManageBlogEmployee,
+    roles: ["Employee"],
+    protected: true,
+  },
+  {
+    path: "/employee/ticket",
+    component: ManagerTicketsEmployee,
+    roles: ["Employee"],
+    protected: true,
+  },
+   {
+    path: "/employee/showtimes",
+    component: ManagerShowtimeEmployee,
+    roles: ["Employee"],
+    protected: true,
+  },
+   {
+    path: "/employee/movies",
+    component: ManagerMoviesEmployee,
     roles: ["Employee"],
     protected: true,
   },
