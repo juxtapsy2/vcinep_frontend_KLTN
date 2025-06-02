@@ -141,3 +141,7 @@ export const employeeRolesForAdminFilter = [
   { value: "Manager", label: "Quản lý rạp (Manager)" },
   { value: "Employee", label: "Nhân viên (Employee)" },
 ];
+
+// Configs for distinguish between production and development
+export const isDev = process.env.NODE_ENV !== "production";
+export const backendURL = isDev ? "http://localhost:8800" : process.env.REACT_APP_BACKEND_URL;
