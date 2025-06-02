@@ -29,8 +29,8 @@ const CommentItem = ({
       <div className="flex items-start gap-2">
         <div className="relative">
           <img
-            src={comment.user.avatar || "https://via.placeholder.com/40"}
-            alt={comment.user.email}
+            src={comment.user?.avatar || "https://via.placeholder.com/40"}
+            alt={comment.user?.email}
             className="w-12 h-12 rounded-full object-cover ring-2 ring-gray-100"
           />
           {depth > 0 && (
