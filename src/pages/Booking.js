@@ -23,7 +23,9 @@ import toast, { Toaster } from "react-hot-toast";
 import SessionBookedNotification from "../components/Common/Booking/SessionBookedNotification .js";
 import BookingExpired from "../components/Common/Booking/BookingExprired.js";
 import io from "socket.io-client";
-const socket = io.connect("http://localhost:8800");
+import { backendURL } from "../constants/constants.js";
+
+const socket = io.connect(backendURL);
 const Booking = () => {
   const { id } = useParams(); //showtimeId;
   const navigate = useNavigate();

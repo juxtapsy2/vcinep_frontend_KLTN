@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import { backendURL } from '../../constants/constants';
 
 export default function ChatBot() {
   const [userInput, setUserInput] = useState('');
   const [messages, setMessages] = useState([
     { role: 'system', content: "Xin chào, tôi là chatbot hỗ trợ, có thể giải đáp thắc mắc của bạn ngắn gọn trong 300 chữ!" }
   ]);
-  const CHATBOT_ENDPOINT = 'http://localhost:5000'; // Endpoint phía backend
+  const CHATBOT_ENDPOINT = backendURL; // Endpoint phía backend
 
   //Các thông số giao diện
   const [isLoading, setIsLoading] = useState(false);
@@ -91,7 +92,7 @@ export default function ChatBot() {
     setUserInput(''); // Clear input field
 
     try {
-      // Gửi request đến backend endpoint (localhost:5000)
+      // Gửi request đến backend endpoint
       const response = await axios.post(
         `${CHATBOT_ENDPOINT}/chat`, 
         {

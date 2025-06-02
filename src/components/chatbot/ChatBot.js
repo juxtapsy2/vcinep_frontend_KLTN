@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
+import { backendURL } from "../../constants/constants";
 
 export default function ChatBot() {
   const [userInput, setUserInput] = useState("");
@@ -11,7 +12,7 @@ export default function ChatBot() {
         "Xin chào, tôi là chatbot hỗ trợ, có thể giải đáp thắc mắc của bạn ngắn gọn trong 300 chữ!",
     },
   ]);
-  const CHATBOT_ENDPOINT = "http://localhost:8800";
+  const CHATBOT_ENDPOINT = backendURL;
   const [isLoading, setIsLoading] = useState(false);
   const [isChatVisible, setIsChatVisible] = useState(false);
   const chatBoxRef = useRef(null);

@@ -4,8 +4,9 @@ import { createMoMoPayment } from "../../../api/PaymentAPI.js";
 import { useBooking } from "../../../contexts/BookingContext.js";
 import io from "socket.io-client";
 import ConfirmPayment from "./ConfirmPayment.js";
+import { backendURL } from "../../../constants/constants.js";
 
-const socket = io.connect("http://localhost:8800");
+const socket = io.connect(backendURL);
 const MovieInfo = ({
   movie,
   selectedSeats,

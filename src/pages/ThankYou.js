@@ -8,10 +8,10 @@ import LoadingEffect from "../components/LoadingEffect.js";
 import SuccessPayment from "../components/Common/Payment/SuccessPayment.js";
 import FailedPayment from "../components/Common/Payment/FailedPayment.js";
 import { formatSeats, formatConcessions } from "../utils/ticketFormatter.js";
-import * as SeatStatusAPI from "../api/SeatStatusAPI.js";
 import io from "socket.io-client";
+import { backendURL } from "../constants/constants.js";
 
-const socket = io.connect("http://localhost:8800");
+const socket = io.connect(backendURL);
 
 const animationStyles = `
   @keyframes float {

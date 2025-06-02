@@ -1,6 +1,8 @@
 import api from "../config/api.js";
 import io from "socket.io-client";
-const socket = io.connect("http://localhost:8800");
+import { backendURL } from "../constants/constants.js";
+
+const socket = io.connect(backendURL);
 export const getAllSeatsForShowtime = async (showtimeId) => {
   try {
     const response = await api.get(`/seatStatus/showtime/${showtimeId}`);

@@ -3,8 +3,9 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "./contexts/AuthContext.js";
 import * as SeatStatusAPI from "./api/SeatStatusAPI.js";
 import io from "socket.io-client";
+import { backendURL } from "./constants/constants.js";
 
-const socket = io.connect("http://localhost:8800");
+const socket = io.connect(backendURL);
 
 const SeatStatusResetWrapper = ({ children }) => {
   const location = useLocation();
