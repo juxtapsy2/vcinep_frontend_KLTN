@@ -1,5 +1,41 @@
 import api from "../config/api.js";
 
+
+
+export const getComments = async ({
+  content,
+  movieId,
+  startDate,
+  endDate,
+  page = 1,
+  limit = 10,
+  isRootOnly = false
+} = {}) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const res = await api.post(
+      "/comment/all", 
+      {
+        content,
+        movieId,
+        startDate,
+        endDate,
+        page,
+        limit,
+        isRootOnly
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    throw error;
+  }
+};
 export const addComment = async (parentComment, movie, user, content) => {
   try {
     const token = localStorage.getItem("accessToken"); // Lấy token từ localStorage

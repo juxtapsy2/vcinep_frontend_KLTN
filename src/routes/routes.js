@@ -52,6 +52,7 @@ import ManageBlogEmployee from "../pages/employee/ManageBlogEmployee";
 import ManagerTicketsEmployee from "../pages/employee/ManagerTicketEmployee";
 import ManagerShowtimeEmployee from "../pages/employee/ManagerShowtimeeEmployee";
 import ManagerMoviesEmployee from "../pages/employee/ManagerMoviesEmployee";
+import ManageComment from "../pages/admin/ManageComment";
 export const publicRoutes = [
   {
     path: "/",
@@ -192,6 +193,12 @@ export const adminRoutes = [
   {
     path: "/admin/movies",
     component: ManageMovies,
+    roles: ["Admin"], // Guest route
+    protected: true,
+  },
+  {
+    path: "/admin/comment",
+    component: ManageComment,
     roles: ["Admin"], // Guest route
     protected: true,
   },

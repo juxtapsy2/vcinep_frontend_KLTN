@@ -9,6 +9,7 @@ import {
   faVideo,
   faMoneyBillWave,
   faUserTie,
+  faComment
 } from "@fortawesome/free-solid-svg-icons";
 
 export const menuItems = [
@@ -119,6 +120,11 @@ export const adminMenuItems = [
     path: "/admin/cinemas",
     icon: faVideo,
     label: "Rạp",
+  },
+   {
+    path: "/admin/comment",
+    icon: faComment,
+    label: "Bình luận",
   },
 ];
 

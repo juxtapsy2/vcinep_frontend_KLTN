@@ -39,6 +39,7 @@ const Breadcrumb = ({ customPaths }) => {
       edit: "Chỉnh sửa",
       add: "Thêm mới",
       employees: "Nhân viên",
+      comment: "Bình luận",
       ...customPaths,
     };
 
