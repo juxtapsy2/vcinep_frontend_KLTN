@@ -82,7 +82,7 @@ function ManageBlog() {
             onClick={handleAddBlog}
             className="w-full sm:w-auto px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
           >
-            Add New Blog
+           Thêm
           </button>
         </div>
       </div>
@@ -93,22 +93,22 @@ function ManageBlog() {
           <thead className="bg-black">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                Title
+               Tiêu đề
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                Date
+                Ngày đăng
               </th>
               {/* <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                 Status
               </th> */}
               <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                Views
+                Lượt xem
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                Likes
+                Thích
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                Actions
+               
               </th>
             </tr>
           </thead>

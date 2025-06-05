@@ -236,7 +236,7 @@ function ManageEmployee() {
             <div />
             <button 
               onClick={openCreateUserModal}
-              className="flex flex-row py-2 px-4 bg-green-600 text-white rounded-lg">
+              className="flex flex-row py-2 px-4 bg-red-600 text-white rounded-lg">
                 <User className="w-5 h-5 mr-2" />
                 Thêm nhân viên
             </button>

@@ -396,7 +396,7 @@ function ManageTickets() {
                           handleTicketClick(ticket);
                         }}
                       >
-                        Chi tiết
+                        Xem
                       </button>
                     </td>
                   </tr>

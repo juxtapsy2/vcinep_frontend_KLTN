@@ -176,7 +176,7 @@ const ManageConcession = () => {
             onClick={() => setShowModal(true)}
             className="bg-red-600 text-white px-6 py-2.5 rounded-lg hover:bg-red-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
           >
-            Add New Concession
+            Thêm đồ uống
           </button>
         </div>
 
@@ -186,7 +186,7 @@ const ManageConcession = () => {
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-bold text-gray-800">
-                    Add New Concession
+                    Thêm đồ uống
                   </h2>
                   <button
                     onClick={() => setShowModal(false)}

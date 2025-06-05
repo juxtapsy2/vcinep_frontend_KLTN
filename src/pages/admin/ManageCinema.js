@@ -265,8 +265,7 @@ function ManageCinema() {
                       onClick={(e) => handleDeleteClick(e, cinema)}
                       className="px-4 py-1.5 rounded-full text-sm font-medium bg-red-100 text-red-700 hover:bg-red-200"
                     >
-                      <FaTrash className="inline-block mr-2" />
-                      Xóa rạp
+                      <FaTrash className="inline-block" />
                     </button>
                   </td>
                 </tr>

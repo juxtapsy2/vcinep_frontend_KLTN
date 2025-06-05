@@ -101,7 +101,7 @@ function ManageAddBlog() {
             {/* Title Section */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 flex items-center">
-                Title
+                Tiêu đề
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <input
@@ -117,7 +117,7 @@ function ManageAddBlog() {
             {/* Cover Image Section */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 flex items-center">
-                Cover Image
+                Ảnh bìa
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -167,7 +167,7 @@ function ManageAddBlog() {
             {/* Editor Section */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 flex items-center">
-                Content
+                Nội dung
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <div className="border rounded-lg overflow-hidden">
