@@ -21,8 +21,8 @@ const CommentItem = ({
   handleEdit,
   setReplyingTo,
 }) => {
-  const isOwner = user && comment.user._id === user._id;
-  const isEditing = editingComment === comment._id;
+  const isOwner = user && comment.user?._id === user?._id;
+  const isEditing = editingComment === comment?._id;
 
   return (
     <div key={comment._id} className="mt-3">
@@ -42,7 +42,7 @@ const CommentItem = ({
           <div className="bg-[#F0F2F5] rounded-xl p-3 inline-block min-w-[250px]">
             <div className="flex items-center gap-2 mb-2">
               <span className="font-medium text-gray-900">
-                {comment.user.username}
+                {comment.user?.username}
               </span>
               {isOwner && (
                 <span className="text-xs px-2 py-0.5 bg-red-50 text-red-600 rounded-full font-medium">
@@ -79,7 +79,7 @@ const CommentItem = ({
               </div>
             ) : (
               <p className="text-black text-sm text-base leading-relaxed">
-                {comment.content}
+                {comment?.content}
               </p>
             )}
           </div>

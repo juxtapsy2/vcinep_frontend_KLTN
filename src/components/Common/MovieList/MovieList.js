@@ -17,16 +17,16 @@ function MovieList({ title, movies }) {
           Xem tất cả
         </a>
       </div>
-      {movies.length > 0 ? (
+      {movies?.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
           {movies.map((movie) => (
-            <MovieItem key={movie._id} movie={movie} />
+            <MovieItem key={movie?._id} movie={movie} />
           ))}
         </div>
       ) : (
         <div className="flex justify-center items-center h-32 bg-gray-900 rounded-lg">
           <p className="text-white text-lg font-semibold">
-            Không tìm thấy phim {movies.length}
+            Không tìm thấy phim 
           </p>
         </div>
       )}
