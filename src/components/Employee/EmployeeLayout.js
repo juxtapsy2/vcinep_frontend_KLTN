@@ -79,11 +79,11 @@ function EmployeeLayout({ children }) {
           icon: faCalendarAlt, // Biểu tượng Suất chiếu (biểu tượng lịch)
           label: "Suất chiếu",
     },
-    {
-      path: "/employee/ticketcounter",
-      icon: faTicketAlt,
-      label: "Đặt vé tại quầy",
-    },
+    // {
+    //   path: "/employee/ticketcounter",
+    //   icon: faTicketAlt,
+    //   label: "Đặt vé tại quầy",
+    // },
     {
       path: "/employee/checkin",
       icon: faUserCheck,
