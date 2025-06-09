@@ -16,6 +16,7 @@ import { getTicketByShowtimeId, checkTicketValid } from "../../api/TicketAPI";
 import toast from "react-hot-toast";
 import ScannerModal from "../../components/Employee/ScannerModal";
 import ItemTicket from "../../components/Employee/ItemTicket";
+import { utils, writeFile } from 'xlsx';
 function DetailCheckInEmployee() {
   const { id } = useParams();
   const [ticketData, setTicketData] = useState([]);
@@ -29,6 +30,87 @@ function DetailCheckInEmployee() {
   const html5QrCodeRef = useRef(null);
   const [isScanning, setIsScanning] = useState(false);
   const [scanStatus, setScanStatus] = useState({ message: "", type: "" });
+  // Thêm hàm exportToExcel
+const exportToExcel = () => {
+  // Thông tin rạp (thông tin mẫu)
+  const theaterInfo = [
+    ['CINEMA STAR VIETNAM'],
+    ['Chi nhánh: CINEMA STAR Quận 1'],
+    ['Địa chỉ: 123 Nguyễn Huệ, Quận 1, TP.HCM'],
+    ['Điện thoại: 1900 1234'],
+    ['Email: support@cinemastar.vn'],
+    ['Website: www.cinemastar.vn'],
+    [], // Dòng trống
+    ['DANH SÁCH VÉ XEM PHIM'],
+    [], // Dòng trống
+  ];
+
+  // Định dạng lại dữ liệu cho Excel
+  const excelData = ticketData.map(ticket => ({
+    'Mã vé': ticket.code,
+    'Tên khách hàng': ticket.userId.username,
+    'Email': ticket.userId.email,
+    'Ghế': ticket.seats,
+    'Bắp nước': ticket.concession,
+    'Giá vé': ticket.totalPrice.toLocaleString('vi-VN') + ' đ',
+    'Trạng thái': getStatusText(ticket.status, ticket.checkinStatus, ticket.isCancelled),
+    'Thời gian đặt': new Date(ticket.createdAt).toLocaleString('vi-VN'),
+    'Thời gian check-in': ticket.date_checkin ? new Date(ticket.date_checkin).toLocaleString('vi-VN') : 'Chưa check-in'
+  }));
+
+  // Thông tin footer
+  const footerInfo = [
+    [], // Dòng trống
+    [`Thời gian xuất báo cáo: ${new Date().toLocaleString('vi-VN')}`],
+    ['Người xuất báo cáo: Admin'],
+    [`Tổng số vé: ${ticketData.length}`],
+    [`Số vé đã check-in: ${ticketData.filter(ticket => ticket.checkinStatus === 'checked_in').length}`],
+    [`Số vé chưa check-in: ${ticketData.filter(ticket => ticket.checkinStatus === 'not_checked_in').length}`],
+    [`Số vé đã hủy: ${ticketData.filter(ticket => ticket.isCancelled).length}`]
+  ];
+
+  // Tạo workbook mới
+  const wb = utils.book_new();
+  
+  // Chuyển đổi dữ liệu thành worksheet
+  const ws = utils.json_to_sheet(excelData, { origin: 'A11' }); // Bắt đầu từ dòng 11
+  
+  // Thêm tiêu đề
+  utils.sheet_add_aoa(ws, theaterInfo, { origin: 'A1' });
+  
+  // Thêm footer
+  utils.sheet_add_aoa(ws, footerInfo, { origin: `A${12 + excelData.length}` });
+
+  // Điều chỉnh độ rộng cột
+  const maxWidth = 20;
+  ws['!cols'] = Array(Object.keys(excelData[0]).length).fill({ wch: maxWidth });
+
+  // Tạo style cho tiêu đề
+  const range = utils.decode_range(ws['!ref']);
+  for (let i = 0; i < 6; i++) {
+    const cell = ws[utils.encode_cell({ r: i, c: 0 })];
+    if (cell) cell.s = { font: { bold: true } };
+  }
+  // Style cho tiêu đề "DANH SÁCH VÉ XEM PHIM"
+  const titleCell = ws[utils.encode_cell({ r: 7, c: 0 })];
+  if (titleCell) titleCell.s = { font: { bold: true, size: 16 } };
+
+  // Style cho header của bảng
+  for (let i = 0; i <= range.e.c; i++) {
+    const cell = ws[utils.encode_cell({ r: 10, c: i })];
+    if (cell) cell.s = { font: { bold: true }, fill: { fgColor: { rgb: "FFFF00" } } };
+  }
+
+  // Thêm worksheet vào workbook
+  utils.book_append_sheet(wb, ws, 'Danh sách vé');
+
+  // Tạo tên file với timestamp
+  const fileName = `danh_sach_ve_${new Date().toISOString().slice(0,10)}.xlsx`;
+
+  // Xuất file
+  writeFile(wb, fileName);
+};
+
   const fetchTickets = async () => {
     try {
       const response = await getTicketByShowtimeId(id);
@@ -245,7 +327,7 @@ function DetailCheckInEmployee() {
             Quét QR
           </button>
 
-          <button className="px-4 py-2 bg-green-600 text-white rounded-lg flex items-center gap-2 hover:bg-green-700 transition-colors">
+          <button  onClick={exportToExcel}  className="px-4 py-2 bg-green-600 text-white rounded-lg flex items-center gap-2 hover:bg-green-700 transition-colors">
             <FileSpreadsheet className="w-5 h-5" />
             Xuất Excel
           </button>
