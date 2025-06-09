@@ -52,7 +52,7 @@ function Login() {
           } else if (userResponse.data.role === "Manager") {
             navigate("/manage");
           } else if (userResponse.data.role === "Employee") {
-            navigate("/employee");
+            navigate("/employee/blog");
           } else {
             navigate("/");
           }

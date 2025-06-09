@@ -371,7 +371,7 @@ function ManagerTicketsEmployee() {
                     </td>
                     <td className="px-6 py-4 text-center">
                       <button
-                        className={`px-6 py-2 rounded-full transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 ${
+                        className={`px-3 py-2 rounded-full transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 ${
                           ticket.isCancelled
                             ? "bg-gradient-to-r from-gray-400 to-gray-600 text-white hover:from-gray-500 hover:to-gray-700"
                             : "bg-gradient-to-r from-red-500 to-red-700 text-white hover:from-red-600 hover:to-red-800"
@@ -381,7 +381,7 @@ function ManagerTicketsEmployee() {
                           handleTicketClick(ticket);
                         }}
                       >
-                        Chi tiết
+                        Xem
                       </button>
                     </td>
                   </tr>

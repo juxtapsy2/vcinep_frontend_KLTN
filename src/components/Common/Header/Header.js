@@ -46,7 +46,7 @@ function Header() {
       case "Manager":
         return "/manage";
       case "Employee":
-        return "/employee";
+        return "/employee/blog";
       default:
         return "/";
     }
@@ -77,7 +77,7 @@ function Header() {
             </div>
             <div className="nav-right">
               <div className="nav-icons">
-                <MdOutlineNotifications className="icon notification-icon" />
+                {/* <MdOutlineNotifications className="icon notification-icon" /> */}
                 {isAuthenticated ? (
                   <>
                     <a className="user-name" href="/">

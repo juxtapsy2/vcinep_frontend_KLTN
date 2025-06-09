@@ -76,7 +76,7 @@ const Home = () => {
           <MovieList title="Phim đang chiếu" movies={nowShowingMovies} />
           <MovieList title="Phim sắp chiếu" movies={comingSoonMovies} />
           <Suggestion />
-          <Promotion items={items} />
+          {/* <Promotion items={items} /> */}
           <Description />
         </>
       )}

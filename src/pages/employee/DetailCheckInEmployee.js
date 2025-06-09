@@ -249,11 +249,6 @@ function DetailCheckInEmployee() {
             <FileSpreadsheet className="w-5 h-5" />
             Xuất Excel
           </button>
-
-          <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg flex items-center gap-2 hover:bg-gray-200 transition-colors">
-            <Filter className="w-5 h-5" />
-            Lọc
-          </button>
         </div>
       </div>
 
