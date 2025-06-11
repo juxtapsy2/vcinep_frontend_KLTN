@@ -109,13 +109,13 @@ function Description() {
                   icon: "🍿",
                 },
                 {
-                  title: "Hội Viên",
-                  desc: "Ưu đãi hấp dẫn mỗi ngày",
+                  title: "Check In",
+                  desc: "Check In bằng QG nhanh chóng",
                   icon: "⭐",
                 },
                 {
-                  title: "Sự Kiện",
-                  desc: "Tổ chức tiệc & họp mặt",
+                  title: "AI",
+                  desc: "Gợi ý phìm bằng công nghệ AI hiện đại",
                   icon: "✨",
                 },
               ].map((service, index) => (
@@ -157,7 +157,7 @@ function Description() {
           </button>
 
           <div className="mt-6 flex justify-center space-x-4 text-sm">
-            {["Hotline: 1900 xxxx", "Email: support@vcinep.vn"].map(
+            {["Hotline: 1900 2224", "Email: support@vcinep.vn"].map(
               (contact, index) => (
                 <span
                   key={index}
