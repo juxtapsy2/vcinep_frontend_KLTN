@@ -5,12 +5,14 @@ import {
   deleteComment,
   updateComment,
 } from "../../../api/CommentAPI";
+import { reviewSenseGemini } from "../../../api/Gemini";
 import { useAuth } from "../../../contexts/AuthContext";
 import CommentItem from "./CommentItem";
 import LoadingEffect from "../../LoadingEffect";
 import toast from "react-hot-toast";
-import { LogIn, MessageSquare } from "lucide-react";
-
+import { LogIn, MessageSquare, Bot, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useLocation } from "react-router-dom";
 const MovieComments = ({ movieId }) => {
   const { user } = useAuth();
   const [comments, setComments] = useState([]);
@@ -20,6 +22,29 @@ const MovieComments = ({ movieId }) => {
   const [editContent, setEditContent] = useState("");
   const [replyContent, setReplyContent] = useState("");
   const commentInputRef = useRef(null);
+const location = useLocation();
+  const slug = location.pathname.split("/movie/")[1];
+  
+  const [showAIAnalysis, setShowAIAnalysis] = useState(false);
+  const [aiResult, setAiResult] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleAIAnalysis = async () => {
+    try {
+      setIsLoading(true);
+      setShowAIAnalysis(true);
+      const result = await reviewSenseGemini(slug); // Using the extracted slug
+      console.log(result);
+      setAiResult(result.response);
+      // console.log(result.)
+    } catch (error) {
+      console.error("Error analyzing comments:", error);
+      setAiResult("Có lỗi xảy ra khi phân tích bình luận.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   useEffect(() => {
     fetchComments();
@@ -173,10 +198,66 @@ const MovieComments = ({ movieId }) => {
 
   return (
     <div className="bg-white rounded-xl transition-all duration-300">
-      <h1 className="text-2xl font-bold text-red-600 mb-8 flex items-center">
-        <span className="inline-block w-1 h-8 mr-4 bg-gradient-to-b from-red-500 to-red-800" />
-        Bình luận
-      </h1>
+       <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center">
+          <span className="inline-block w-1 h-8 mr-4 bg-gradient-to-b from-red-500 to-red-800 rounded-full" />
+          <h1 className="text-2xl font-bold text-red-600 flex items-center">
+            <MessageSquare className="mr-2 h-6 w-6" />
+            Bình luận
+          </h1>
+        </div>
+
+        <div className="relative group">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full text-white shadow-lg hover:shadow-xl transition-all duration-300"
+            onClick={handleAIAnalysis}
+          >
+            <Bot className="h-6 w-6" />
+            <div className="absolute hidden group-hover:block -top-10 right-0 bg-gray-800 text-white text-sm py-1 px-2 rounded whitespace-nowrap">
+              Phân tích bình luận với AI
+            </div>
+          </motion.button>
+
+          <AnimatePresence>
+            {!isLoading && showAIAnalysis && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                className="absolute right-0 top-12 w-80 bg-white rounded-lg shadow-xl border border-gray-200 p-4 z-50"
+              >
+                <div className="absolute right-3 -top-2 w-4 h-4 bg-white transform rotate-45 border-l border-t border-gray-200" />
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-sm font-semibold text-gray-700">
+                    Phân tích bình luận AI
+                  </h3>
+                  <button
+                    onClick={() => setShowAIAnalysis(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="text-sm text-gray-600 max-h-60 overflow-y-auto custom-scrollbar">
+                  {aiResult || "Chưa có kết quả phân tích"}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {isLoading && (
+            <div className="absolute right-0 top-12 w-80 bg-white rounded-lg shadow-xl border border-gray-200 p-4 z-50">
+              <div className="absolute right-3 -top-2 w-4 h-4 bg-white transform rotate-45 border-l border-t border-gray-200" />
+              <div className="flex items-center justify-center py-4">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500" />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {user ? (
         <form onSubmit={handleSubmitComment} className="mb-3">
           <div className="flex items-start">
@@ -253,6 +334,22 @@ const MovieComments = ({ movieId }) => {
           </div>
         )}
       </div>
+       <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 2px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #888;
+          border-radius: 2px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #555;
+        }
+      `}</style>
     </div>
   );
 };
