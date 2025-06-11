@@ -22,15 +22,15 @@ export const PolicyTab = () => {
             <ul className="space-y-3 text-gray-700">
               <li className="flex items-center">
                 <div className="w-2 h-2 bg-red-500 rounded-full mr-3"></div>
-                Đặt vé trước tối thiểu 30 phút trước giờ chiếu
-              </li>
-              <li className="flex items-center">
-                <div className="w-2 h-2 bg-red-500 rounded-full mr-3"></div>
                 Có thể hủy vé trước 24 giờ chiếu phim
               </li>
               <li className="flex items-center">
                 <div className="w-2 h-2 bg-red-500 rounded-full mr-3"></div>
-                Thanh toán an toàn qua nhiều hình thức
+                Thanh toán an toàn qua MoMo
+              </li>
+              <li className="flex items-center">
+                <div className="w-2 h-2 bg-red-500 rounded-full mr-3"></div>
+               Tải vé có chứa QR code để Check In
               </li>
             </ul>
           </motion.div>
@@ -60,7 +60,7 @@ export const PolicyTab = () => {
           </motion.div>
 
           {/* Phần hoàn tiền */}
-          <motion.div
+          {/* <motion.div
             whileHover={{ scale: 1.02 }}
             className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 shadow-lg border border-gray-200 hover:shadow-red-500/20 transition duration-300"
           >
@@ -81,10 +81,10 @@ export const PolicyTab = () => {
                 Không hoàn tiền nếu hủy trong vòng 12h
               </li>
             </ul>
-          </motion.div>
+          </motion.div> */}
 
           {/* Phần khách hàng thân thiết */}
-          <motion.div
+          {/* <motion.div
             whileHover={{ scale: 1.02 }}
             className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 shadow-lg border border-gray-200 hover:shadow-red-500/20 transition duration-300"
           >
@@ -105,7 +105,7 @@ export const PolicyTab = () => {
                 Đổi điểm lấy vé xem phim miễn phí
               </li>
             </ul>
-          </motion.div>
+          </motion.div> */}
         </div>
 
         {/* Phần liên hệ */}
@@ -118,7 +118,7 @@ export const PolicyTab = () => {
           <p className="text-lg text-gray-700">
             Mọi thắc mắc xin vui lòng liên hệ:
           </p>
-          <p className="text-red-600 font-semibold">Hotline: 1900 xxxx</p>
+          <p className="text-red-600 font-semibold">Hotline: 1900 2244</p>
           <p className="text-red-600 font-semibold">
             Email: support@cinema.com
           </p>

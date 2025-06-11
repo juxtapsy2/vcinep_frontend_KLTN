@@ -110,9 +110,9 @@ export const AccountHeader = ({ user }) => {
             </h2>
             <p className="text-base text-gray-600">{user?.email}</p>
             <div className="flex gap-3 mt-3">
-              <span className="px-3 py-1.5 bg-red-50 text-red-600 rounded-full text-sm font-medium">
+              {/* <span className="px-3 py-1.5 bg-red-50 text-red-600 rounded-full text-sm font-medium">
                 0 Stars
-              </span>
+              </span> */}
               <span className="px-3 py-1.5 bg-gray-50 text-gray-600 rounded-full text-sm font-medium">
                 {user?.registrationDate
                   ? new Date(user.registrationDate).toLocaleDateString("vi-VN")
