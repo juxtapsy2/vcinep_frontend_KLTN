@@ -26,6 +26,7 @@ import ManageTheater from "../pages/admin/ManageTheater";
 import MangeConcession from "../pages/admin/ManageConcession";
 import ManageBlog from "../pages/admin/ManageBlog";
 import ManageAddBlog from "../pages/admin/ManageAddBlog";
+import ManageAddBlogEmployee from "../pages/employee/ManageAddBlog";
 import Blog from "../pages/Blog";
 import About from "../pages/About";
 import DashboardManager from "../pages/manager/DashboardManager";
@@ -35,6 +36,9 @@ import ManagerMovies from "../pages/manager/ManagerMovies";
 import ManagerTheater from "../pages/manager/ManagerTheater";
 import BlogDetail from "../pages/BlogDetail";
 import ManageEditBlog from "../pages/admin/ManageEditBlog";
+import ManageEditBlogManager from "../pages/manager/ManageEditBlog";
+import ManageEditBlogEmployee from "../pages/employee/ManageEditBlog";
+
 import CinemaDetail from "../pages/CinemaDetail";
 import ManagerAddBlog from "../pages/manager/ManagerAddBlog";
 import EditMovie from "../pages/admin/EditMovie";
@@ -329,6 +333,11 @@ export const managerRoutes = [
     roles: ["Manager"], // Guest route
     protected: true,
   },
+   {
+    path: "/manage/blog/edit/:slug",
+    component: ManageEditBlogManager,
+    protected: false,
+  },
   {
     path: "/manage/cinemas/",
     component: ManagerDetailCinema,
@@ -402,6 +411,17 @@ export const employeeRoutes = [
     component: ManageBlogEmployee,
     roles: ["Employee"],
     protected: true,
+  },
+  {
+    path: "/employee/blog/add",
+    component: ManageAddBlogEmployee,
+    roles: ["Employee"], // Guest route
+    protected: true,
+  },
+   {
+    path: "/employee/blog/edit/:slug",
+    component: ManageEditBlogEmployee,
+    protected: false,
   },
   {
     path: "/employee/ticket",

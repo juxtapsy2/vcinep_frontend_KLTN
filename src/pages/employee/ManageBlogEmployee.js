@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { FiEdit, FiEye, FiTrash2, FiSearch } from "react-icons/fi";
-import { getAllBlogs } from "../../api/BlogAPI";
 import { useNavigate } from "react-router-dom";
 
-function ManageBlogEmployee() {
-  const navigate = useNavigate();
+import { FiEdit, FiEye, FiTrash2, FiSearch } from "react-icons/fi";
+import { getAllBlogs, deleteBlogBySlug } from "../../api/BlogAPI";
+function ManageBlog() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const navigate = useNavigate();
   const [limit] = useState(10);
+  const handleAddBlog = () => {
+    navigate("add");
+  };
+  const handleEditBlog = (slug) => {
+    navigate(`edit/${slug}`);
+  };
+  const handleViewBlog = (slug) => {
+    window.open(`/blog/${slug}`, "_blank");
+  };
   useEffect(() => {
     fetchBlogs();
   }, [currentPage, searchTerm]);
-  const handleAddBlog = () => {
-    navigate("/employee/blog/add");
-  };
+
   const fetchBlogs = async () => {
     try {
       setLoading(true);
@@ -36,11 +43,14 @@ function ManageBlogEmployee() {
     setSearchTerm(e.target.value);
     setCurrentPage(1);
   };
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this blog?")) {
-      // Implement delete logic here
-      console.log("Delete blog with id:", id);
+  const handleDelete = async (slug) => {
+    if (window.confirm("Bạn có muốn xóa bài viết này")) {
+      try {
+        await deleteBlogBySlug(slug);
+        fetchBlogs();
+      } catch (error) {
+        console.error("Error deleting blog:", error);
+      }
     }
   };
   const formatDate = (dateString) => {
@@ -52,6 +62,7 @@ function ManageBlogEmployee() {
       minute: "2-digit",
     });
   };
+
   return (
     <div className="min-h-screen bg-white ">
       {/* Header */}
@@ -71,32 +82,33 @@ function ManageBlogEmployee() {
             onClick={handleAddBlog}
             className="w-full sm:w-auto px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
           >
-            Add New Blog
+           Thêm
           </button>
         </div>
       </div>
+
       {/* Table */}
       <div className="overflow-x-auto bg-white rounded-lg shadow">
         <table className="w-full table-auto">
           <thead className="bg-black">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                Title
+               Tiêu đề
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                Date
+                Ngày đăng
               </th>
               {/* <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                 Status
               </th> */}
               <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                Views
+                Lượt xem
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                Likes
+                Thích
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                Actions
+               
               </th>
             </tr>
           </thead>
@@ -132,19 +144,21 @@ function ManageBlogEmployee() {
                   <td className="px-6 py-4">
                     <div className="flex space-x-3">
                       <button
+                        onClick={() => handleViewBlog(blog.slug)}
                         className="text-blue-600 hover:text-blue-800"
                         title="View"
                       >
                         <FiEye className="w-5 h-5" />
                       </button>
                       <button
+                        onClick={() => handleEditBlog(blog.slug)}
                         className="text-green-600 hover:text-green-800"
                         title="Edit"
                       >
                         <FiEdit className="w-5 h-5" />
                       </button>
                       <button
-                        onClick={() => handleDelete(blog._id)}
+                        onClick={() => handleDelete(blog.slug)} // Changed from blog._id to blog.slug
                         className="text-red-600 hover:text-red-800"
                         title="Delete"
                       >
@@ -221,4 +235,4 @@ function ManageBlogEmployee() {
   );
 }
 
-export default ManageBlogEmployee;
+export default ManageBlog;
