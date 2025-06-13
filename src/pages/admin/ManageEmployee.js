@@ -139,7 +139,7 @@ function ManageEmployee() {
   const handleSubmitCreateUser = async () => {
     try {
       if ((newUserData.role === "Manager" || newUserData.role === "Employee") && !newUserData.idCinema) {
-        toast.error("Vui lòng chọn rạp cho người quản lý.");
+        toast.error("Vui lòng chọn rạp.");
         return;
       }
       const response = await createUser(newUserData);
@@ -153,7 +153,7 @@ function ManageEmployee() {
           phoneNumber: "",
           email: "",
           password: "",
-          role: "User",
+          role: "Employee",
           idCinema: "",
         });
         fetchEmployees();

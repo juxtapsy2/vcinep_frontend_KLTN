@@ -18,7 +18,7 @@ const CreateUserModal = ({ isOpen, onClose, userData, setUserData, onSubmit }) =
         <div className="space-y-4">
           <input
             type="text"
-            name="name"
+            name="username"
             placeholder="Tên người dùng"
             value={userData.username}
             onChange={handleChange}
