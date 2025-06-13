@@ -17,8 +17,11 @@ import InfoModal from "../../components/Admin/InfoModal/InfoModal";
 import { defaultAvatarUrl, employeeRolesForAdminFilter, statuses } from "../../constants/constants";
 import { toast } from "react-hot-toast";
 import CreateUserModal from "../../components/Admin/CreateUser/CreateUserModal";
+import { useAuth } from "../../contexts/AuthContext";
 
 function ManageEmployee() {
+  const { user } = useAuth();
+  console.log("User:", user);
   const [loading, setLoading] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [editingUser, setEditingUser] = useState({ userId: "", role: "", idCinema: "" });
@@ -41,7 +44,7 @@ function ManageEmployee() {
     email: "",
     password: "",
     role: "Employee",
-    idCinema: "",
+    idCinema: user?.idCinema || "",
   });
   const ITEMS_PER_PAGE = 10;
   const formatDate = (dateString) => {
@@ -368,6 +371,7 @@ function ManageEmployee() {
                 onSubmit={handleSubmitCreateUser}
                 userData={newUserData}
                 setUserData={setNewUserData}
+                disableOptions
               />
             </div>
             )

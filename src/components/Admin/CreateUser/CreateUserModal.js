@@ -2,7 +2,7 @@ import React from "react";
 import CinemaSelectDropdown from "../CinemaSelectDropdown/CinemaSelectDropdown";
 import RoleSelectDropdown from "../RoleSelectDropdown/RoleSelectDropdown";
 
-const CreateUserModal = ({ isOpen, onClose, userData, setUserData, onSubmit }) => {
+const CreateUserModal = ({ isOpen, onClose, userData, setUserData, onSubmit, disableOptions }) => {
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -73,6 +73,7 @@ const CreateUserModal = ({ isOpen, onClose, userData, setUserData, onSubmit }) =
                   idCinema: value === "Manager" ? prev.idCinema : undefined,
                 }));
               }}
+              disabled={disableOptions}
             />
           </div>
 
@@ -86,6 +87,7 @@ const CreateUserModal = ({ isOpen, onClose, userData, setUserData, onSubmit }) =
                 onChange={(value) =>
                   setUserData((prev) => ({ ...prev, idCinema: value }))
                 }
+                disabled={disableOptions}
               />
             </div>
           )}
