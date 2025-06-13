@@ -3,7 +3,7 @@ import * as Select from "@radix-ui/react-select";
 import { ChevronDownIcon, CheckIcon } from "@radix-ui/react-icons";
 import { getCinemaAll } from "../../../api/CinemaAPI";
 
-const CinemaSelectDropdown = ({ selectedCinemaId, onChange }) => {
+const CinemaSelectDropdown = ({ selectedCinemaId, onChange, disabled }) => {
   const [cinemas, setCinemas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,7 +34,7 @@ const CinemaSelectDropdown = ({ selectedCinemaId, onChange }) => {
   }
 
   return (
-    <Select.Root value={selectedCinemaId} onValueChange={onChange}>
+    <Select.Root value={selectedCinemaId} onValueChange={onChange} disabled={disabled}>
       <Select.Trigger
         className="inline-flex items-center justify-between min-w-[180px] px-2 py-1 text-sm font-semibold text-blue-900 bg-white rounded-full border-none"
         aria-label="Cinema"

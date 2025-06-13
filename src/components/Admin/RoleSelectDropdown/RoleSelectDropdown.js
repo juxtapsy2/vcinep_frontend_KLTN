@@ -3,9 +3,9 @@ import * as Select from "@radix-ui/react-select";
 import { ChevronDownIcon, CheckIcon } from "@radix-ui/react-icons";
 import { rolesForRender } from "../../../constants/constants";
 
-const RoleSelectDropdown = ({ value, onChange }) => {
+const RoleSelectDropdown = ({ value, onChange, disabled }) => {
   return (
-    <Select.Root value={value} onValueChange={onChange}>
+    <Select.Root value={value} onValueChange={onChange} disabled={disabled}>
       <Select.Trigger className="inline-flex items-center justify-between min-w-[120px] px-2 py-1 rounded-full bg-blue-50 bg-opacity-50 text-blue-900 text-sm font-medium">
         <Select.Value placeholder="Chọn vai trò" />
         <Select.Icon className="ml-2">

@@ -49,7 +49,6 @@ import CheckinEmployee from "../pages/employee/CheckinEmployee";
 import ManageEmployee from "../pages/manager/ManageEmployee";
 import DetailCheckInEmployee from "../pages/employee/DetailCheckInEmployee";
 import ManagePricing from "../pages/admin/TicketPricing";
-import ManageEmployeeAdmin from "../pages/admin/ManageEmployee";
 import Calendar from "../pages/Calendar";
 import AdminManageEmployee from "../pages/admin/ManageEmployee";
 import ManageBlogEmployee from "../pages/employee/ManageBlogEmployee";
@@ -388,7 +387,7 @@ export const managerRoutes = [
   },
   {
     path: "manage/employee/",
-    component: ManageEmployeeAdmin,
+    component: ManageEmployee,
     roles: ["Manager"], // Guest route
     protected: true,
   },
