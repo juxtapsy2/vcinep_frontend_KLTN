@@ -17,12 +17,25 @@ const Messenger = () => {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-    // Nhân viên lấy room list ngay khi load trang
+    // Employee join chat
     if (user?.role === userRoles.EMPLOYEE) {
       socket.emit("join-chat", userRoles.EMPLOYEE);
     }
-
-    // Guest join room đã join trước đó 10' hoặc join room mới
+  
+    // For User
+    if (user?.role === userRoles.USER) {
+      let storedRoomId = localStorage.getItem("user_room_id");
+      if (!storedRoomId) {
+        storedRoomId = `user-${socket.id}`;
+        localStorage.setItem("user_room_id", storedRoomId);
+      }
+      setChatRoom(storedRoomId);
+      socket.emit("join-chat", storedRoomId);
+      const storedMessages = JSON.parse(localStorage.getItem(`chat_${storedRoomId}`)) || [];
+      setMessages(storedMessages);
+    }
+  
+    // For Guest
     let storedRoomId = localStorage.getItem("guest_room_id");
     if (!user?.role) {
       if (!storedRoomId) {
@@ -34,14 +47,18 @@ const Messenger = () => {
       const storedMessages = JSON.parse(localStorage.getItem(`chat_${storedRoomId}`)) || [];
       setMessages(storedMessages);
     }
-
-    // Nhân viên
+  
+    // Listen for available rooms for employees
     socket.on("room-list", setAvailableRooms);
+
+    // Handle unread message counts
     socket.on("unread-messages", (counts) => {
       setUnreadCounts(counts);
+      // Set hasUnreadMessages based on the unread counts for all rooms
       setUnreadMessages(Object.values(counts).some(count => count > 0));
     });
-    // Load tin nhắn khi chuyển room
+
+    // When the chatRoom is selected, load its messages
     if (chatRoom) {
       socket.emit("join-chat", chatRoom);
       socket.on("loadMessages", (oldMessages) => {
@@ -50,20 +67,28 @@ const Messenger = () => {
         setUnreadCounts((prev) => ({ ...prev, [chatRoom]: 0 }));
       });
     }
-    
+  
+    // Handle receiving a new message
     socket.on("receiveMessage", (message) => {
       if (message.room === chatRoom) {
         setMessages((prevMessages) => [...prevMessages, message]);
-      } else if (message.sender !== (user?.role || userRoles.GUEST)) {
+      } else if (message.sender !== (user?.role) && message.room !== chatRoom) {
+        // Increase unread count for the User when they are not in the room
         setUnreadCounts((prev) => ({
           ...prev,
           [message.room]: (prev[message.room] || 0) + 1,
         }));
       }
-      // Cuộn xuống
+
+       // Set unread messages state for User when a new message comes from the Employee
+       if (message.sender === userRoles.EMPLOYEE && message.room !== chatRoom) {
+        setUnreadMessages(true);
+      }
+
+      // Scroll to the newest message
       chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     });
-  
+
     return () => {
       socket.off("room-list");
       socket.off("unread-messages");
@@ -71,7 +96,7 @@ const Messenger = () => {
       socket.off("receiveMessage");
     };
   }, [chatRoom, user?.role]);
-  
+
   const handleSendMessage = () => {
     if (inputValue.trim() && chatRoom) {
       const newMessage = { 
@@ -81,9 +106,9 @@ const Messenger = () => {
       };
       socket.emit('sendMessage', { room: chatRoom, message: newMessage });
       setInputValue('');
-      const storedMessages = JSON.parse(localStorage.getItem(`chat_${chatRoom}`)) || [];
-      localStorage.setItem(`chat_${chatRoom}`, JSON.stringify(storedMessages));
-      // Cuộn xuống
+      setUnreadCounts(prev => ({ ...prev, [chatRoom]: 0 }));
+
+      // Scroll to the newest message
       chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   };
@@ -91,10 +116,11 @@ const Messenger = () => {
   const handleToggleChat = () => {
     setIsOpen(!isOpen);
     if (!isOpen && chatRoom) {
+      // Reset unread count for the room when chat is toggled open
       setUnreadCounts((prev) => ({ ...prev, [chatRoom]: 0 }));
+      setUnreadMessages(false);
     }
   };
-  
 
   return (
     <div className="fixed bottom-4 right-6 z-[99999]">
@@ -124,7 +150,8 @@ const Messenger = () => {
               </div>
             </div>
           )}
-          {/* Khung chat */}
+
+          {/* Chat box */}
           <div className="bg-white w-80 h-96 rounded-lg shadow-lg flex flex-col mt-2 border border-red-200">
             <div className="bg-red-600 text-white p-4 rounded-t-lg">
               <h2 className="text-lg font-semibold">{user?.role === userRoles.EMPLOYEE ? "Trò chuyện với khách hàng" : "Trò chuyện với chúng tôi"}</h2>
