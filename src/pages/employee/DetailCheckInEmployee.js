@@ -236,7 +236,20 @@ const exportToExcel = () => {
     if (checkinStatus === "not_checked_in") return "Chưa check-in";
     return "Hoạt động";
   };
-
+  const filteredTickets = ticketData.filter(ticket => {
+    if (!searchTerm) return true;
+    
+    const searchLower = searchTerm.toLowerCase();
+    const username = ticket.userId?.username?.toLowerCase() || '';
+    const email = ticket.userId?.email?.toLowerCase() || '';
+    const code = ticket.code?.toLowerCase() || '';
+    
+    return (
+      username.includes(searchLower) || 
+      email.includes(searchLower) || 
+      code.includes(searchLower)
+    );
+  });
   return (
     <div className="min-h-screen bg-white p-6">
       {/* Dashboard Section */}
@@ -362,7 +375,7 @@ const exportToExcel = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {ticketData.map((ticket) => (
+              {filteredTickets.map((ticket) => (
                 <ItemTicket
                   ticket={ticket}
                   getStatusColor={getStatusColor}
